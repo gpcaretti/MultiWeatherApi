@@ -1,4 +1,5 @@
 ﻿{
   //"$schema": "https://xunit.net/schema/current/xunit.runner.schema.json",
-  "DarkSkyApiKey": "c5ab83de14d57843c3d9be08ee907000"
+  "DarkSkyApiKey": "YOUR_API_KEY_HERE",
+  "OpenWeatherApiKey": "YOUR_API_KEY_HERE"
 }
