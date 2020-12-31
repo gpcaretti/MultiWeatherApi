@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.DarkSkyApi.Model
+namespace MultiWeatherApi.DarkSky.Model
 {
     /// <summary>
     /// An severe weather alert issued by a weather service for a particular location.

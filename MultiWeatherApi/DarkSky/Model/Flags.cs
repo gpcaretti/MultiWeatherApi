@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.DarkSkyApi.Model
+namespace MultiWeatherApi.DarkSky.Model
 {
     /// <summary>
     /// Metadata associated with a forecast.

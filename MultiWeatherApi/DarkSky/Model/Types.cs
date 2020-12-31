@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiWeatherApi.DarkSkyApi.Model
+namespace MultiWeatherApi.DarkSky.Model
 {
     /// <summary>
     /// Units of measurement supported by the Forecast service.

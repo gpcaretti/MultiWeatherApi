@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
-using MultiWeatherApi.DarkSkyApi.Model;
+using MultiWeatherApi.DarkSky.Model;
 
-namespace MultiWeatherApi.DarkSkyApi {
+namespace MultiWeatherApi.DarkSky {
 
     /// <summary>
     ///     The Dark Sky service. Returns weather data for given locations, and provides API usage information.

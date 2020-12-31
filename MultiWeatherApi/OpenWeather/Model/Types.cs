@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiWeatherApi.OpenWeatherMap.Model {
+namespace MultiWeatherApi.OpenWeather.Model {
 
     public enum Unit {
         Imperial,

@@ -1,16 +1,13 @@
+  "DarkSkyApiKey": "c5ab83de14d57843c3d9be08ee907000"
 # MultiWeather API
 
-An unofficial C# .NET Standard 2.0 library to unify the access to multiple weather services.
+An unofficial C# .NET Standard 2.0 library to unify the access to multiple weather services.[CR]
 Compatible with .NET 4.5+, Mono 4.6, Windows 8/8.1, Windows Phone 8/8.1, .NET Core 2.0+, Xamarin Android/iOS, Xamarin Forms and Universal Windows Apps.
 
-The first services integrated are the [Dark Sky](https://darksky.net/dev) and the [OpenWeather](httpshttps://openweathermap.org/api) weather service.
+The first services integrated are [Dark Sky](https://darksky.net/dev) and [OpenWeather](https://openweathermap.org/api) weather services.
 
+This work has been inspired and originally derived by [Jerome Cheng](https://github.com/jcheng31)'s [DarkSkyApi](https://github.com/jcheng31/DarkSkyApi) project.[CR]
 All developer are invited to extend this library with additional services.
-
-
-## Introduction
-
-This work has been inspired and originally derived by [Jerome Cheng](https://github.com/jcheng31)'s [DarkSkyApi](https://github.com/jcheng31/DarkSkyApi) project.
 
 
 ## Installation

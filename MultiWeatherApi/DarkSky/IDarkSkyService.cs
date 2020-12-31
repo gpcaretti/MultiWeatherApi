@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MultiWeatherApi.DarkSkyApi.Model;
+using MultiWeatherApi.DarkSky.Model;
 
-namespace MultiWeatherApi.DarkSkyApi {
+namespace MultiWeatherApi.DarkSky {
 
     public interface IDarkSkyService {
 

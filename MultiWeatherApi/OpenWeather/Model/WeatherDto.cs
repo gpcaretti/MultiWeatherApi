@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.OpenWeatherMap.Model {
+namespace MultiWeatherApi.OpenWeather.Model {
 
     [Serializable, DataContract]
     public class WeatherDto {
+        [DataMember(Name = "id")]
         public long Id { get; set; }
 
         [DataMember(Name = "name")]

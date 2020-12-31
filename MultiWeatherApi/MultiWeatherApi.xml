@@ -1,0 +1,1497 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MultiWeatherApi</name>
+    </assembly>
+    <members>
+        <member name="P:MultiWeatherApi.DarkSkyWrapper.ApiKey">
+            <summary>Set the api key for the underneath weather service</summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSkyWrapper.#ctor">
+            <summary>
+                Default constructor. Require to soon set the <see cref="P:MultiWeatherApi.DarkSkyWrapper.ApiKey"/>.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSkyWrapper.#ctor(System.String)">
+            <summary>
+                Constructor allowing to set the <see cref="P:MultiWeatherApi.DarkSkyWrapper.ApiKey"/> for the underneath weather service
+            </summary>
+            <param name="apiKey">the API key for the underneath weather service</param>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.DarkSkyService">
+            <summary>
+                The Dark Sky service. Returns weather data for given locations, and provides API usage information.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.DarkSkyService.CurrentConditionsUrl">
+            <summary>
+                The API endpoint to retrieve current weather conditions.
+            {0} - API key.
+            {1} - Latitude.
+            {2} - Longitude.
+            {3} - Units.
+            {4} - Extends hourly data to include the next 7 days (if "hourly" is given).
+            {5} - Any blocks to be excluded from the results.
+            {6} - The language to be used in text summaries.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.DarkSkyService.SpecificTimeConditionsUrl">
+            <summary>
+                The API endpoint to retrieve weather conditions at a particular date and time.
+            {0} - API key.
+            {1} - Latitude.
+            {2} - Longitude.
+            {3} - Time to retrieve, either Unix time or [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS].
+            {4} - Units.
+            {5} - Extends hourly data to include the next 7 days (if "hourly" is given).
+            {6} - Any blocks to be excluded from the results.
+            {7} - The language to be used in text summaries. 
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:MultiWeatherApi.DarkSky.DarkSkyService"/> class.
+            </summary>
+            <param name="key">The API key to use.</param>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.DarkSkyService.ApiCallsMade">
+            <summary>
+                Gets the number of API calls made today using the given API key.
+                <para>This property will be null until a request has been made.</para>
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours and possible alerts
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours, the daily forecast for the next 7 days and possible alerts
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               The most general method to retrieve weather data and forecast for a particular latitude and longitude (full optional).
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                The most general method to retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetForecastFromUrlAsync(System.String)">
+            <summary>
+            Given a formatted URL containing the parameters for a forecast
+            request, retrieves, parses, and returns weather data from it.
+            </summary>
+            <param name="requestUrl">
+            The full URL from which the request should be made, including
+            the API key and other parameters.
+            </param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> containing
+            weather data.
+            </returns>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.UpdateApiCallsMade(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                Updates the number of API calls made using the value provided in the response to a weather data request.
+            </summary>
+            <param name="response">Response received after successfully requesting weather data.</param>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.IDarkSkyService.ApiCallsMade">
+            <summary>
+                Gets the number of API calls made today using the given API key.
+                <para>This property will be null until a request has been made.</para>
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours and possible alerts
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours, the daily forecast for the next 7 days and possible alerts
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+               The most general method to retrieves weather data and forecast for a particular latitude and longitude (full optional).
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+                The most general method to retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
+                conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
+                * The 'currently' data point will refer to the time provided, rather than the current time.
+                * The 'minutely' data block will be omitted, unless you are requesting a time within an hour of the present.
+                * The 'hourly data block will contain data points starting at midnight (local time) of the day requested, and continuing 
+                  until midnight (local time) of the following day.
+                * The 'daily' data block will contain a single data point referring to the requested date.
+                * The 'alerts' data block will be omitted.
+            </summary>
+            <param name="latitude">The latitude to retrieve data for.</param>
+            <param name="longitude">The longitude to retrieve data for.</param>
+            <param name="date">Requested date</param>
+            <param name="excludes">Any blocks that should be excluded from the request.</param>
+            <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Alert">
+            <summary>
+            An severe weather alert issued by a weather service for a particular location.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Alert.expires">
+            <summary>
+            Unix time at which this alert will expire.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Alert.time">
+            <summary>
+            Unix time at which this alert was issued.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Alert.severity">
+            <summary>
+            The severity of this alert, as a string.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Title">
+            <summary>
+            Gets or sets a short text summary of this alert.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Severity">
+            <summary>
+            Gets the severity of this weather alert.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Time">
+            <summary>
+            Gets or sets the moment in time at which this alert was issued.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Regions">
+            <summary>
+            Gets or sets the regions covered by this alert.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Expires">
+            <summary>
+            Gets or sets the moment in time at which this alert is no longer valid.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Description">
+            <summary>
+            Gets or sets the text description of this alert.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Alert.Uri">
+            <summary>
+            Gets or sets a URI to the alert's details.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Severity">
+            <summary>
+            Represents the severity of a weather alert.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Severity.Advisory">
+            <summary>
+            This alert indicates that individuals should be aware of potentially severe weather.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Severity.Watch">
+            <summary>
+            This alert indicates that individuals should prepare for potentially severe weather.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Severity.Warning">
+            <summary>
+            This alert indicates that individuals should take immediate action to protect themselves
+            and others from potentially severe weather.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Severity.Unknown">
+            <summary>
+            The severity of this alert is not recognized by DarkSky.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.CurrentDataPoint">
+            <summary>
+            The current weather conditions at a particular location.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.time">
+            <summary>
+            Unix time at which these conditions apply.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Time">
+            <summary>
+            Gets or sets the time of these conditions.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Summary">
+            <summary>
+            Gets or sets a human-readable summary of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.NearestStormDistance">
+            <summary>
+            Gets or sets the (approximate) distance to the nearest storm.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.NearestStormBearing">
+            <summary>
+            Gets or sets the (approximate) bearing to the nearest storm.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.PrecipitationIntensity">
+            <summary>
+            Gets or sets the average expected precipitation assuming any precipitation occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.PrecipitationProbability">
+            <summary>
+            Gets or sets the probability of precipitation (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.PrecipitationType">
+            <summary>
+            Gets or sets the type of precipitation (rain, sleet, or snow).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Temperature">
+            <summary>
+            Gets or sets the temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.ApparentTemperature">
+            <summary>
+            Gets or sets the apparent ("feels like") temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.DewPoint">
+            <summary>
+            Gets or sets the dew point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Humidity">
+            <summary>
+            Gets or sets the relative humidity (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.WindSpeed">
+            <summary>
+            Gets or sets the wind speed.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.WindBearing">
+            <summary>
+            Gets or sets the direction (in degrees) the wind is coming from.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Visibility">
+            <summary>
+            Gets or sets the average visibility (capped at 10 miles).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.CloudCover">
+            <summary>
+            Gets or sets the percentage of cloud cover (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Pressure">
+            <summary>
+            Gets or sets the sea-level air pressure.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.Ozone">
+            <summary>
+            Gets or sets the columnar density of total atmospheric ozone, in Dobson units.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.UVIndex">
+            <summary>
+            Gets or sets the UV index.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.CurrentDataPoint.WindGust">
+            <summary>
+            Gets or sets the wind gust speed.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.DailyForecast">
+            <summary>
+            A day-by-day forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DailyForecast.Summary">
+            <summary>
+            Gets or sets a human-readable summary of the forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DailyForecast.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DailyForecast.Days">
+            <summary>
+            Gets or sets the individual days that make up this forecast.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.DayDataPoint">
+            <summary>
+            The weather conditions for a particular day.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.time">
+            <summary>
+            Unix time at which this data point applies.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.sunriseTime">
+            <summary>
+            Unix time of the last sunrise before the solar noon closest to local noon on
+            the given day.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.sunsetTime">
+            <summary>
+            Unix time of the first sunset after the solar noon closest to local noon on
+            the given day.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.precipIntensityMaxTime">
+            <summary>
+            Unix time at which the maximum expected precipitation occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.temperatureMaxTime">
+            <summary>
+            Unix time at which the maximum temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.temperatureMinTime">
+            <summary>
+            Unix time at which the lowest temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.apparentTemperatureMinTime">
+            <summary>
+            Unix time at which the apparent minimum temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.apparentTemperatureMaxTime">
+            <summary>
+            Unix time at which the apparent maximum temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.apparentTemperatureLowTime">
+            <summary>
+            Unix time at which the overnight low apparent temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.apparentTemperatureHighTime">
+            <summary>
+            Unix time at which the daytime high apparent temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.temperatureLowTime">
+            <summary>
+            Unix time at which the overnight low temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.temperatureHighTime">
+            <summary>
+            Unix time at which the daytime high temperature occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.uvIndexTime">
+            <summary>
+            Unix time at which the maximum UV index occurs.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.DayDataPoint.windGustTime">
+            <summary>
+            Unix time at which the wind gust speed occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Time">
+            <summary>
+            Gets or sets the time of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Summary">
+            <summary>
+            Gets or sets a human-readable summary of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.SunsetTime">
+            <summary>
+            Gets or sets the time of the first sunset after the solar noon closest to local noon
+            on the given day.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.SunriseTime">
+            <summary>
+            Gets or sets the time of the last sunrise before the solar noon closest to local noon
+            on the given day.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MoonPhase">
+            <summary>
+            Gets or sets a value representing the fractional part of the lunation number
+            of the given day. Can be thought of as the "percentage complete" of the current
+            lunar month.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.PrecipitationIntensity">
+            <summary>
+            Gets or sets the average expected precipitation assuming any precipitation occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MaxPrecipitationIntensity">
+            <summary>
+            Gets or sets the maximum expected precipitation intensity.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.PrecipitationType">
+            <summary>
+            Gets or sets the type of precipitation.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MaxPrecipitationIntensityTime">
+            <summary>
+            Gets or sets the time at which the maximum expected precipitation intensity occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.PrecipitationProbability">
+            <summary>
+            Gets or sets the probability of precipitation (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.PrecipitationAccumulation">
+            <summary>
+            Gets or sets the amount of snowfall accumulation expected to occur.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentLowTemperature">
+            <summary>
+            Gets or sets the overnight apparent ("feels like") low temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentLowTemperatureTime">
+            <summary>
+            Gets or sets the time at which the overnight apparent low temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentHighTemperature">
+            <summary>
+            Gets or sets the daytime apparent ("feels like") high temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentHighTemperatureTime">
+            <summary>
+            Gets or sets the time at which the daytime apparent high temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.LowTemperature">
+            <summary>
+            Gets or sets the overnight low temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.LowTemperatureTime">
+            <summary>
+            Gets or sets the time at which the overnight low temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.HighTemperature">
+            <summary>
+            Gets or sets the daytime high temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.HighTemperatureTime">
+            <summary>
+            Gets or sets the time at which the daytime high temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Temperature">
+            <summary>
+            Gets or sets the air temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MinTemperature">
+            <summary>
+            Gets or sets the minimum (lowest) temperature for the day.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MinTemperatureTime">
+            <summary>
+            Gets or sets the time at which the minimum (lowest) temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MaxTemperature">
+            <summary>
+            Gets or sets the maximum (highest) temperature for the day.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.MaxTemperatureTime">
+            <summary>
+            Gets or sets the time at which the maximum (highest) temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentMinTemperature">
+            <summary>
+            Gets or sets the apparent ("feels like") minimum temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentMinTemperatureTime">
+            <summary>
+            Gets or sets the time at which the apparent minimum temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentMaxTemperature">
+            <summary>
+            Gets or sets the apparent ("feels like") maximum temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.ApparentMaxTemperatureTime">
+            <summary>
+            Gets or sets the time at which the apparent maximum temperature occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.DewPoint">
+            <summary>
+            Gets or sets the dew point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Humidity">
+            <summary>
+            Gets or sets the relative humidity (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.WindSpeed">
+            <summary>
+            Gets or sets the wind speed.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.WindBearing">
+            <summary>
+            Gets or sets the direction (in degrees) the wind is coming from.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.WindGust">
+            <summary>
+            Gets or sets the wind gust speed.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.WindGustTime">
+            <summary>
+            Gets or sets the time at which the wind gust speed occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Visibility">
+            <summary>
+            Gets or sets the average visibility (capped at 10 miles).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.CloudCover">
+            <summary>
+            Gets or sets the percentage of cloud cover (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Pressure">
+            <summary>
+            Gets or sets the sea-level air pressure.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.Ozone">
+            <summary>
+            Gets or sets the columnar density of total atmospheric ozone, in Dobson units.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.UVIndex">
+            <summary>
+            Gets or sets the UV index.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.DayDataPoint.UVIndexTime">
+            <summary>
+            Gets or sets the time at which the maximum UV index occurs.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Flags">
+            <summary>
+            Metadata associated with a forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.Sources">
+            <summary>
+            Gets or sets the IDs for each data source used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.DarkSkyStations">
+            <summary>
+            Gets or sets the IDs for each radar station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.DataPointStations">
+            <summary>
+            Gets or sets the IDs for each DataPoint station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.IsdStations">
+            <summary>
+            Gets or sets the IDs for each ISD station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.LampStations">
+            <summary>
+            Gets or sets the IDs for each LAMP station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.MetarStations">
+            <summary>
+            Gets or sets the IDs for each METAR station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.MadisStations">
+            <summary>
+            Gets or sets the IDs for each MADIS station used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.MetnoLicense">
+            <summary>
+            Gets or sets the met.no license. If this is present, data from api.met.no was used to provide info for this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Flags.Units">
+            <summary>
+            Gets or sets the type of units that are used for the data in this forecast.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Forecast">
+            <summary>
+                A forecast for a particular location.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Latitude">
+            <summary>
+            Gets or sets the latitude of this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Longitude">
+            <summary>
+            Gets or sets the longitude of this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.TimeZone">
+            <summary>
+            Gets or sets the IANA time zone name for this location.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.TimeZoneOffset">
+            <summary>
+            Gets or sets the time zone offset, in hours from GMT.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Currently">
+            <summary>
+            Gets or sets the current conditions at the requested location.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Minutely">
+            <summary>
+            Gets or sets the minute-by-minute conditions for the next hour.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Hourly">
+            <summary>
+            Gets or sets the hour-by-hour conditions for the next two days.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Daily">
+            <summary>
+            Gets or sets the daily conditions for the next week.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Flags">
+            <summary>
+            Gets or sets the metadata (flags) associated with this forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.Forecast.Alerts">
+            <summary>
+            Gets or sets any weather alerts related to this location.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.HourDataPoint">
+            <summary>
+            The weather conditions for a particular hour.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.HourDataPoint.time">
+            <summary>
+            Unix time at which this data point applies.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Time">
+            <summary>
+            Gets or sets the time of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Summary">
+            <summary>
+            Gets or sets a human-readable summary of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.PrecipitationIntensity">
+            <summary>
+            Gets or sets the average expected precipitation assuming any precipitation occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.PrecipitationProbability">
+            <summary>
+            Gets or sets the probability of precipitation (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.PrecipitationType">
+            <summary>
+            Gets or sets the type of precipitation.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.PrecipitationAccumulation">
+            <summary>
+            Gets or sets the amount of snowfall accumulation expected to occur.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Temperature">
+            <summary>
+            Gets or sets the temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.ApparentTemperature">
+            <summary>
+            Gets or sets the apparent ("feels like") temperature.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.DewPoint">
+            <summary>
+            Gets or sets the dew point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Humidity">
+            <summary>
+            Gets or sets the relative humidity (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.WindSpeed">
+            <summary>
+            Gets or sets the wind speed.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.WindBearing">
+            <summary>
+            Gets or sets the direction (in degrees) the wind is coming from.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Visibility">
+            <summary>
+            Gets or sets the average visibility (capped at 10 miles).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.CloudCover">
+            <summary>
+            Gets or sets the percentage of cloud cover (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Pressure">
+            <summary>
+            Gets or sets the sea-level air pressure.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.Ozone">
+            <summary>
+            Gets or sets the columnar density of total atmospheric ozone, in Dobson units.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.UVIndex">
+            <summary>
+            Gets or sets the UV index.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourDataPoint.WindGust">
+            <summary>
+            Gets or sets the wind gust speed.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.HourlyForecast">
+            <summary>
+            An hour-by-hour forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourlyForecast.Summary">
+            <summary>
+            Gets or sets a human-readable summary of the forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourlyForecast.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.HourlyForecast.Hours">
+            <summary>
+            Gets or sets the individual hours that make up this forecast.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.MinuteDataPoint">
+            <summary>
+            The weather conditions for a particular minute.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.MinuteDataPoint.time">
+            <summary>
+            Unix time at which this data point applies.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinuteDataPoint.Time">
+            <summary>
+            Gets or sets the time of this data point.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinuteDataPoint.PrecipitationIntensity">
+            <summary>
+            Gets or sets the average expected precipitation assuming any precipitation occurs.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinuteDataPoint.PrecipitationProbability">
+            <summary>
+            Gets or sets the probability of precipitation (from 0 to 1).
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinuteDataPoint.PrecipitationType">
+            <summary>
+            Gets or sets the type of precipitation.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.MinutelyForecast">
+            <summary>
+            A minute-by-minute forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinutelyForecast.Summary">
+            <summary>
+            Gets or sets a human-readable summary of the forecast.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinutelyForecast.Icon">
+            <summary>
+            Gets or sets machine-readable text that can be used to select an icon to display.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.DarkSky.Model.MinutelyForecast.Minutes">
+            <summary>
+            Gets or sets the individual minutes that make up this forecast.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Unit">
+            <summary>
+            Units of measurement supported by the Forecast service.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.US">
+            <summary>
+            US units of measurement.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Fahrenheit or inches (respectively).
+            Nearest storm distance: Miles
+            Precipitation intensity: Inches per hour
+            Precipitation accumulation: Inches
+            Temperature: Fahrenheit
+            Dew Point: Fahrenheit
+            Wind Speed: Miles per hour
+            Pressure: Millibars
+            Visibility: Miles
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.SI">
+            <summary>
+            SI units of measurement.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Celsius or centimeters (respectively).
+            Nearest storm distance: Kilometers
+            Precipitation intensity: Millimeters per hour
+            Precipitation accumulation: Centimeters
+            Temperature: Celsius
+            Dew Point: Celsius
+            Wind Speed: Meters per second
+            Pressure: Hectopascals (equivalent to millibars)
+            Visibility: Kilometers
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.CA">
+            <summary>
+            Canadian units of measurement. The same as SI, but with 
+            kilometers per hour used for Wind Speed.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Celsius or centimeters (respectively).
+            Nearest storm distance: Kilometers
+            Precipitation intensity: Millimeters per hour
+            Precipitation accumulation: Centimeters
+            Temperature: Celsius
+            Dew Point: Celsius
+            Wind Speed: Kilometers per hour
+            Pressure: Hectopascals (equivalent to millibars)
+            Visibility: Kilometers
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.UK">
+            <summary>
+            UK units of measurement. The same as SI, but with miles per
+            hour used for Wind Speed.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Celsius or centimeters (respectively).
+            Nearest storm distance: Kilometers
+            Precipitation intensity: Millimeters per hour
+            Precipitation accumulation: Centimeters
+            Temperature: Celsius
+            Dew Point: Celsius
+            Wind Speed: Miles per hour
+            Pressure: Hectopascals (equivalent to millibars)
+            Visibility: Kilometers
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.UK2">
+            <summary>
+            UK units of measurement. The same as SI, except that 
+            nearestStormDistance and visibility are in miles and windSpeed 
+            is in miles per hour
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Celsius or centimeters (respectively).
+            Nearest storm distance: Miles
+            Precipitation intensity: Millimeters per hour
+            Precipitation accumulation: Centimeters
+            Temperature: Celsius
+            Dew Point: Celsius
+            Wind Speed: Miles per hour
+            Pressure: Hectopascals (equivalent to millibars)
+            Visibility: Miles
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.Auto">
+            <summary>
+            Automatically choose units of measurement based on geographic location.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Extend">
+            <summary>
+            Data blocks that can have their ranges extended.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Extend.Hourly">
+            <summary>
+            Extends the hourly forecast block to the next seven days from just the next two.
+            <para>Ignored when making time machine requests.</para>
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Exclude">
+            <summary>
+            Data blocks that can be excluded from a request.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Currently">
+            <summary>
+            The current data block, containing current weather conditions.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Minutely">
+            <summary>
+            The minutely data block, containing minute-by-minute data for
+            the next hour.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Hourly">
+            <summary>
+            The hourly data block, containing hour-by-hour data for
+            the next two days (or the next week, if extended).
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Daily">
+            <summary>
+            The daily data block, containing day-by-day data for
+            the next week.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Alerts">
+            <summary>
+            A list of any severe weather alerts issued for the requested location.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Flags">
+            <summary>
+            Associated metadata related to the request.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.Language">
+            <summary>
+            Languages that the service can return text summaries in.
+            These are listed here in the order that they appear in the
+            Forecast.io API documentation.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.DarkSky.Model.ParameterExtensions">
+            <summary>
+            Extension methods for the request parameter enumerations.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Unit)">
+            <summary>
+            Gives the Forecast Service-friendly name for
+            this parameter.
+            </summary>
+            <param name="self">
+            The parameter to convert.
+            </param>
+            <returns>
+            The service-friendly <see cref="T:System.String"/>.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown when the parameter does not have a corresponding
+            friendly name.
+            </exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Extend)">
+            <summary>
+            Gives the Forecast Service-friendly name for
+            this parameter.
+            </summary>
+            <param name="self">
+            The parameter to convert.
+            </param>
+            <returns>
+            The service-friendly <see cref="T:System.String"/>.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown when the parameter does not have a corresponding
+            friendly name.
+            </exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Exclude)">
+            <summary>
+            Gives the Forecast Service-friendly name for
+            this parameter.
+            </summary>
+            <param name="self">
+            The parameter to convert.
+            </param>
+            <returns>
+            The service-friendly <see cref="T:System.String"/>.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown when the parameter does not have a corresponding
+            friendly name.
+            </exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Language)">
+            <summary>
+            Gives the Forecast Service-friendly name for
+            this parameter.
+            </summary>
+            <param name="self">
+            The parameter to convert.
+            </param>
+            <returns>
+            The service-friendly <see cref="T:System.String"/>.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown when the parameter does not have a corresponding
+            friendly name.
+            </exception>
+        </member>
+        <member name="F:MultiWeatherApi.DateTimeHelper.BaseUnixTime">
+            <summary>
+                DateTime representing 0 Unix time: January 1, 1970, GMT.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.DateTimeHelper.ToDateTimeOffset(System.Int32)">
+            <summary>
+                Converts Unix Time (seconds since January 1, 1970 UTC) to a DateTimeOffset object.
+            </summary>
+            <param name="secondsSince">Seconds since January 1, 1970.</param>
+            <returns><see cref="T:System.DateTime"/> representing the given Unix time.</returns>
+        </member>
+        <member name="M:MultiWeatherApi.DateTimeHelper.ToUnixTime(System.DateTimeOffset)">
+            <summary>
+                Converts this DateTimeOffset to Unix time (seconds since January 1, 1970 UTC).
+            </summary>
+            <param name="time"></param>
+            <returns>The number of seconds since January 1, 1970 UTC.</returns>
+        </member>
+        <member name="T:MultiWeatherApi.IWeatherFactory">
+            <summary>
+                Interface for the weather api concreate factory class
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.IWeatherFactory.Create``1(System.String)">
+            <summary>
+                Override this metho if you want to add a new weather service to the set of available weather services
+            </summary>
+            <typeparam name="T">Currentyl can only be <see cref="T:MultiWeatherApi.DarkSky.DarkSkyService"/> or <see cref="T:MultiWeatherApi.OpenWeather.OpenWeatherService"/></typeparam>
+            <param name="apiKey">the api used to access the selected weather service</param>
+        </member>
+        <member name="T:MultiWeatherApi.Model.Unit">
+            <summary>
+                Units of measurement supported by the Forecast service.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Unit.US">
+            <summary>
+                US units of measurement.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Fahrenheit or inches (respectively).
+            Nearest storm distance: Miles
+            Precipitation intensity: Inches per hour
+            Precipitation accumulation: Inches
+            Temperature: Fahrenheit
+            Dew Point: Fahrenheit
+            Wind Speed: Miles per hour
+            Pressure: Millibars
+            Visibility: Miles
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Unit.SI">
+            <summary>
+                SI units of measurement.
+            <para>
+            Summaries containing temperature or snow accumulation units have
+            their values in degrees Celsius or centimeters (respectively).
+            Nearest storm distance: Kilometers
+            Precipitation intensity: Millimeters per hour
+            Precipitation accumulation: Centimeters
+            Temperature: Celsius
+            Dew Point: Celsius
+            Wind Speed: Meters per second
+            Pressure: Hectopascals (equivalent to millibars)
+            Visibility: Kilometers
+            </para>
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Unit.Auto">
+            <summary>
+                Automatically choose units of measurement based on geographic location.
+            </summary>
+        </member>
+        <member name="P:MultiWeatherApi.OpenWeatherWrapper.ApiKey">
+            <summary>Set the api key for the underneath weather service</summary>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeatherWrapper.#ctor">
+            <summary>
+                Default constructor. Require to soon set the <see cref="P:MultiWeatherApi.OpenWeatherWrapper.ApiKey"/>.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeatherWrapper.#ctor(System.String)">
+            <summary>
+                Constructor allowing to set the <see cref="P:MultiWeatherApi.OpenWeatherWrapper.ApiKey"/> for the underneath weather service
+            </summary>
+            <param name="apiKey">the API key for the underneath weather service</param>
+        </member>
+        <member name="P:MultiWeatherApi.OpenWeather.Model.Current.UnixTime">
+            <summary>Gets or sets the time of this data point (unix, UTC)</summary>
+        </member>
+        <member name="P:MultiWeatherApi.OpenWeather.Model.Daily.UnixTime">
+            <summary>Gets or sets the time of this data point (unix, UTC)</summary>
+        </member>
+        <member name="P:MultiWeatherApi.OpenWeather.Model.WeatherDto.UnixTime">
+            <summary>Gets or sets the time of this data point (unix, UTC)</summary>
+        </member>
+        <member name="T:MultiWeatherApi.OpenWeather.OpenWeatherService">
+            <summary>
+                The OpenWeatherMap service. Returns weather data for given locations, and provides API usage information.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:MultiWeatherApi.OpenWeather.OpenWeatherService"/> class.
+            </summary>
+            <param name="key">The API key to use.</param>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+            <summary>
+            
+            </summary>
+            <param name="latitude"></param>
+            <param name="longitude"></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.String,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+            <summary>
+            
+            </summary>
+            <param name="city"></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetForecast(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+            <summary>
+            
+            </summary>
+            <param name="latitude"></param>
+            <param name="longitude"></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.ParseForecastFromResponse``1(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                Wrap the default parser to catch the possible parser exceptions in a <see cref="T:MultiWeatherApi.WeatherException"/>
+            </summary>
+            <typeparam name="TResult"></typeparam>
+            <param name="response"></param>
+            <returns>the parsed object or a <see cref="T:MultiWeatherApi.WeatherException"/></returns>
+        </member>
+        <member name="T:MultiWeatherApi.WeatherException">
+            <summary>
+                TODO
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.WeatherException.EmptyApiKey">
+            <summary>The api is empty</summary>
+        </member>
+        <member name="F:MultiWeatherApi.WeatherException.JsonUnsuccessful">
+            <summary>Json content is not valid</summary>
+        </member>
+        <member name="F:MultiWeatherApi.WeatherException.JsonParsingError">
+            <summary>Error parsing or missing fields</summary>
+        </member>
+        <member name="F:MultiWeatherApi.WeatherException.HttpError">
+            <summary>Generic http error</summary>
+        </member>
+        <member name="F:MultiWeatherApi.WeatherException.HttpUnauthorized">
+            <summary>Unauthorized http error</summary>
+        </member>
+        <member name="T:MultiWeatherApi.WeatherFactory">
+            <summary>
+                Concreate factory class to create the required weather service wrapper
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherFactory.Create``1(System.String)">
+            <summary>
+                Override this metho if you want to add a new weather service to the set of available weather services
+            </summary>
+            <typeparam name="T">Currentyl can only be <see cref="T:MultiWeatherApi.DarkSky.DarkSkyService"/> or <see cref="T:MultiWeatherApi.OpenWeather.OpenWeatherService"/></typeparam>
+            <param name="apiKey">the api used to access the selected weather service</param>
+        </member>
+        <member name="T:MultiWeatherApi.WeatherServiceBase">
+            <summary>
+                General commond methods for an Weather API fetcher
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the weather service.
+            </summary>
+            <param name="key">The API key to use.</param>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.GetCompressionHandler">
+            <summary>
+                Creates a HttpClientHandler that supports compression for responses.
+            </summary>
+            <returns>The <see cref="T:System.Net.Http.HttpClientHandler"/> with compression support.</returns>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.ParseForecastFromResponse``1(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                Given a successful response from the forecast service, parses the weather data contained within and returns it.
+            </summary>
+            <param name="response">A successful response containing weather data.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> for an object containing the weather data from the response.</returns>
+            <remarks>This implementation is based on standard .NET json deserializer. Can throw HTTP and serializer exceptions.</remarks>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.ThrowExceptionIfApiKeyInvalid">
+            <summary>
+                Checks if the user provided a non-null API key during initialization, and throws an exception if not.
+            </summary>
+            <exception cref="T:MultiWeatherApi.WeatherException">Thrown if the API key is null or the empty string.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.ThrowExceptionIfResponseError(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                Throws an <see cref="T:MultiWeatherApi.WeatherException"/> if the given response didn't have a status code indicating success, 
+                with the status code included in the exception message.
+            </summary>
+            <param name="response">The response</param>
+            <exception cref="T:MultiWeatherApi.WeatherException">Thrown if the response did not have a status code indicating success.</exception>
+        </member>
+    </members>
+</doc>

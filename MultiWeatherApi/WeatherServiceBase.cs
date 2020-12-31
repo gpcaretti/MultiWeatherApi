@@ -8,7 +8,7 @@ namespace MultiWeatherApi {
     /// <summary>
     ///     General commond methods for an Weather API fetcher
     /// </summary>
-    public class WeatherServiceBase {
+    public abstract class WeatherServiceBase {
 
         private protected readonly string _apiKey;
 

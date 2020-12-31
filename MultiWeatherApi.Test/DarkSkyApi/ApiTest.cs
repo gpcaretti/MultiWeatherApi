@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using MultiWeatherApi.DarkSkyApi;
-using MultiWeatherApi.DarkSkyApi.Model;
+using MultiWeatherApi.DarkSky;
+using MultiWeatherApi.DarkSky.Model;
 using Shouldly;
 using Xunit;
 
-namespace MultiWeatherApi.DarkSky.Test {
+namespace DarkSkyApi.Test {
 
     /// <summary>
     /// Tests for the main ForecastApi class.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.OpenWeatherMap.Model {
+namespace MultiWeatherApi.OpenWeather.Model {
 
     [Serializable, DataContract]
     public class Main {

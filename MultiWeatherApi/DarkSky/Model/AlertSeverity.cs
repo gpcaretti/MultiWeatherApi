@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MultiWeatherApi.DarkSkyApi.Model
+namespace MultiWeatherApi.DarkSky.Model
 {
     /// <summary>
     /// Represents the severity of a weather alert.
@@ -28,7 +28,7 @@ namespace MultiWeatherApi.DarkSkyApi.Model
         Warning,
 
         /// <summary>
-        /// The severity of this alert is not recognized by DarkSkyApi.
+        /// The severity of this alert is not recognized by DarkSky.
         /// </summary>
         Unknown
     }

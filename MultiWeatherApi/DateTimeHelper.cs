@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace MultiWeatherApi {
+
     internal static class DateTimeHelper {
 
         /// <summary>

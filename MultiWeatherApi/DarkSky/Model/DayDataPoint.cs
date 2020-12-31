@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.DarkSkyApi.Model
+namespace MultiWeatherApi.DarkSky.Model
 {
     /// <summary>
     /// The weather conditions for a particular day.

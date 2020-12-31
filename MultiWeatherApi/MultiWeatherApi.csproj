@@ -13,4 +13,12 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 	</PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>
