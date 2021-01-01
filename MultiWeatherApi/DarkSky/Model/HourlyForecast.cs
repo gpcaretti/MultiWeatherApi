@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.DarkSky.Model
-{
+namespace MultiWeatherApi.DarkSky.Model {
     /// <summary>
-    /// An hour-by-hour forecast.
+    ///     An hour-by-hour forecast.
     /// </summary>
-    [DataContract]
-    public class HourlyForecast
-    {
+    [Serializable, DataContract]
+    public class HourlyForecast {
+ 
         /// <summary>
         /// Gets or sets a human-readable summary of the forecast.
-        /// </summary>
+        /// </summary>  
         [DataMember(Name = "summary")]
         public string Summary { get; set; }
 
@@ -25,6 +25,6 @@ namespace MultiWeatherApi.DarkSky.Model
         /// Gets or sets the individual hours that make up this forecast.
         /// </summary>
         [DataMember(Name = "data")]
-        public IList<HourDataPoint> Hours { get; set; } 
+        public IList<HourDataPoint> Hours { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MultiWeatherApi.DarkSky.Model;
+using MultiWeatherApi.Model;
 
 namespace MultiWeatherApi.DarkSky {
 
@@ -57,14 +58,14 @@ namespace MultiWeatherApi.DarkSky {
         /// </summary>
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
-        /// <param name="unit">Default is <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         public Task<Forecast> GetCurrentWeather(
             double latitude,
             double longitude,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
             return GetWeather(latitude, longitude,
                 new Extend[0],
@@ -77,14 +78,14 @@ namespace MultiWeatherApi.DarkSky {
         /// </summary>
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
-        /// <param name="unit">Default is <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         public Task<Forecast> GetForecast(
             double latitude,
             double longitude,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
             return GetWeather(latitude, longitude,
                 new Extend[0],
@@ -99,7 +100,7 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
         /// <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-        /// <param name="unit">Default is <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
@@ -108,7 +109,7 @@ namespace MultiWeatherApi.DarkSky {
             double longitude,
             IList<Extend> extends,
             IList<Exclude> excludes,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
 
             ThrowExceptionIfApiKeyInvalid();
@@ -145,7 +146,7 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="date">Requested date</param>
-        /// <param name="unit">Default <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
@@ -153,7 +154,7 @@ namespace MultiWeatherApi.DarkSky {
             double latitude,
             double longitude,
             DateTimeOffset date,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
             return
                 GetWeatherByDate(
@@ -180,7 +181,7 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="date">Requested date</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
-        /// <param name="unit">Default <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         public Task<Forecast> GetWeatherByDate(
@@ -188,7 +189,7 @@ namespace MultiWeatherApi.DarkSky {
             double longitude,
             DateTime date,
             IList<Exclude> excludes,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
             return
                 GetWeatherByDate(
@@ -216,7 +217,7 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="date">Requested date</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
         /// <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-        /// <param name="unit">Default <see cref="Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
@@ -226,7 +227,7 @@ namespace MultiWeatherApi.DarkSky {
             DateTimeOffset date,
             IList<Extend> extends,
             IList<Exclude> excludes,
-            Unit unit = Unit.Auto,
+            DSUnit unit = DSUnit.Auto,
             Language language = Language.English) {
 
             ThrowExceptionIfApiKeyInvalid();
@@ -270,6 +271,7 @@ namespace MultiWeatherApi.DarkSky {
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 var response = await client.GetAsync(requestUrl).ConfigureAwait(false);
+                //var v1 = response.Content.ReadAsStringAsync();
                 ThrowExceptionIfResponseError(response);
                 UpdateApiCallsMade(response);
                 return await ParseForecastFromResponse<Forecast>(response).ConfigureAwait(false);

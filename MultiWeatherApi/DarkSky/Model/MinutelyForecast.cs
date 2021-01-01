@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace MultiWeatherApi.DarkSky.Model
-{
+namespace MultiWeatherApi.DarkSky.Model {
+
     /// <summary>
-    /// A minute-by-minute forecast.
+    ///     A minute-by-minute forecast.
     /// </summary>
-    [DataContract]
-    public class MinutelyForecast
-    {
+    [Serializable, DataContract]
+    public class MinutelyForecast {
         /// <summary>
         /// Gets or sets a human-readable summary of the forecast.
         /// </summary>

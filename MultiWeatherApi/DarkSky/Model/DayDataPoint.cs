@@ -6,7 +6,7 @@ namespace MultiWeatherApi.DarkSky.Model
     /// <summary>
     /// The weather conditions for a particular day.
     /// </summary>
-    [DataContract]
+    [Serializable, DataContract]
     public class DayDataPoint
     {
         /// <summary>

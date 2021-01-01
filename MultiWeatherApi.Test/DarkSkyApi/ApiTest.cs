@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi.DarkSky;
 using MultiWeatherApi.DarkSky.Model;
+using MultiWeatherApi.Model;
 using Shouldly;
 using Xunit;
 
 namespace DarkSkyApi.Test {
 
     /// <summary>
-    /// Tests for the main ForecastApi class.
+    ///     Tests for the main ForecastApi class.
     /// </summary>
     public class ApiTests {
         // These coordinates came from the Forecast API documentation, and should return forecasts with all blocks.
@@ -84,54 +85,53 @@ namespace DarkSkyApi.Test {
         }
 
         /// <summary>
-        /// Checks that a request can be made for a non-US location.
-        /// Added to test GitHub issue 6.
+        ///     Checks that a request can be made for a non-US location. Added to test GitHub issue 6.
         /// </summary>
         [Fact]
         public async Task NonUSDataCanBeRetrieved() {
             var client = new DarkSkyService(_apiKey);
 
-            var result = await client.GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            var result = await client.GetCurrentWeather(BolognaLatitude, BolognaLongitude, DSUnit.SI, Language.Italian);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
         }
 
         /// <summary>
-        ///     Checks that requests can be made with Unit.SI.
+        ///     Checks that requests can be made with DSUnit.SI.
         /// </summary>
         [Fact]
         public async Task UnitSIWorksCorrectly() {
             var client = new DarkSkyService(_apiKey);
 
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, Unit.SI);
+            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.SI);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
         }
 
         /// <summary>
-        ///     Checks that requests can be made with Unit.UK.
+        ///     Checks that requests can be made with DSUnit.UK.
         /// </summary>
         [Fact]
         public async Task UnitUKWorksCorrectly() {
             var client = new DarkSkyService(_apiKey);
 
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, Unit.UK);
+            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.UK);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
         }
 
         /// <summary>
-        /// Checks that requests can be made with Unit.UK2.
+        /// Checks that requests can be made with DSUnit.UK2.
         /// Added to test GitHub issue 18.
         /// </summary>
         [Fact]
         public async Task UnitUK2WorksCorrectly() {
             var client = new DarkSkyService(_apiKey);
 
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, Unit.UK2);
+            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.UK2);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -146,7 +146,7 @@ namespace DarkSkyApi.Test {
             var client = new DarkSkyService(_apiKey);
             var exclusionList = new List<Exclude> { Exclude.Minutely };
 
-            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, Unit.SI, Language.Italian);
+            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, DSUnit.SI, Language.Italian);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -162,7 +162,7 @@ namespace DarkSkyApi.Test {
             var client = new DarkSkyService(_apiKey);
             var exclusionList = new List<Exclude> { Exclude.Minutely, Exclude.Hourly, Exclude.Daily };
 
-            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, Unit.SI);
+            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, DSUnit.SI);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -179,7 +179,7 @@ namespace DarkSkyApi.Test {
             var client = new DarkSkyService(_apiKey);
             var exclusionList = new List<Exclude> { Exclude.Hourly, Exclude.Minutely, Exclude.Alerts, Exclude.Flags };
 
-            var result = await client.GetWeather(BolognaLatitude, BolognaLongitude, null, exclusionList, Unit.Auto, Language.Italian);
+            var result = await client.GetWeather(BolognaLatitude, BolognaLongitude, null, exclusionList, DSUnit.Auto, Language.Italian);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -204,10 +204,10 @@ namespace DarkSkyApi.Test {
         public async Task UnitsCanBeSpecified() {
             var client = new DarkSkyService(_apiKey);
 
-            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude, Unit.CA);
+            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude, DSUnit.CA);
 
             Assert.NotNull(result);
-            Assert.Equal(result.Flags.Units, Unit.CA.ToValue());
+            Assert.Equal(result.Flags.Units, DSUnit.CA.ToValue());
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace DarkSkyApi.Test {
             var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
             var exclusionList = new List<Exclude> { Exclude.Hourly };
 
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, exclusionList, Unit.SI);
+            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, exclusionList, DSUnit.SI);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -249,10 +249,10 @@ namespace DarkSkyApi.Test {
             var client = new DarkSkyService(_apiKey);
             var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
 
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, Unit.CA);
+            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
 
             Assert.NotNull(result);
-            Assert.Equal(result.Flags.Units, Unit.CA.ToValue());
+            Assert.Equal(result.Flags.Units, DSUnit.CA.ToValue());
         }
 
         [Fact]
@@ -261,7 +261,7 @@ namespace DarkSkyApi.Test {
             var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, Unit.CA);
+            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
@@ -273,7 +273,7 @@ namespace DarkSkyApi.Test {
             var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, Unit.CA);
+            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);

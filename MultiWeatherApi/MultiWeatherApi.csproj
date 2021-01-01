@@ -21,4 +21,8 @@
     <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
+  </ItemGroup>
+
 </Project>

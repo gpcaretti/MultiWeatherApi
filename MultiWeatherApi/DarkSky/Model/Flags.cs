@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace MultiWeatherApi.DarkSky.Model
@@ -6,7 +7,7 @@ namespace MultiWeatherApi.DarkSky.Model
     /// <summary>
     /// Metadata associated with a forecast.
     /// </summary>
-    [DataContract]
+    [Serializable, DataContract]
     public class Flags
     {
         /// <summary>

@@ -6,7 +6,7 @@ namespace MultiWeatherApi.DarkSky.Model
     /// <summary>
     /// An severe weather alert issued by a weather service for a particular location.
     /// </summary>
-    [DataContract]
+    [Serializable, DataContract]
     public class Alert
     {
         /// <summary>

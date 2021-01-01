@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
 using MultiWeatherApi.OpenWeather.Model;
 using Shouldly;
@@ -16,11 +17,8 @@ namespace OpenWeatherApi.Test {
         private const double AlcatrazLatitude = 37.8267;
         private const double AlcatrazLongitude = -122.423;
 
-        private const double MumbaiLatitude = 18.975;
-        private const double MumbaiLongitude = 72.825833;
-
-        private const double BolognaLatitude = 44.482732;
-        private const double BolognaLongitude = 11.352134;
+        private const double BolognaLatitude = 44.47432;
+        private const double BolognaLongitude = 11.430134;
         private const string BolognaCityName = "Bologna";
 
         /// <summary>
@@ -64,7 +62,7 @@ namespace OpenWeatherApi.Test {
         public async Task GetCurrentWeatherByCityName_Test() {
             // prepare
             var client = new OpenWeatherService(_apiKey);
-            var output = await client.GetCurrentWeather(BolognaCityName);
+            var output = await client.GetCurrentWeather(BolognaCityName, OWUnit.Metric, Language.Italian);
 
             // assert
             output.CityName.ShouldNotBeNullOrWhiteSpace();
@@ -83,7 +81,7 @@ namespace OpenWeatherApi.Test {
             output.System.ShouldNotBeNull();
 
             // prepare imperial
-            var outputImperial = await client.GetCurrentWeather(BolognaCityName, Unit.Imperial, Language.En);
+            var outputImperial = await client.GetCurrentWeather(BolognaCityName, OWUnit.Imperial, Language.English);
             // assert
             outputImperial.Id.ShouldBe(output.Id);
             outputImperial.CityName.ShouldBe(output.CityName);

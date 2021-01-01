@@ -6,7 +6,7 @@ namespace MultiWeatherApi.DarkSky.Model
     /// <summary>
     /// The current weather conditions at a particular location.
     /// </summary>
-    [DataContract]
+    [Serializable, DataContract]
     public class CurrentDataPoint
     {
         /// <summary>

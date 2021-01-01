@@ -1,18 +1,12 @@
 ﻿using System;
+using MultiWeatherApi.Model;
 
 namespace MultiWeatherApi.OpenWeather.Model {
 
-    public enum Unit {
-        Imperial,
-        Metric,
-        Standard
-    }
-
-    public enum Language {
-        It,
-        En,
-        Fr,
-        De
+    public enum OWUnit {
+        Imperial = Unit.Imperial,
+        Metric = Unit.SI,
+        Standard = Unit.Auto
     }
 
 }

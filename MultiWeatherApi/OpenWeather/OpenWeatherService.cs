@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather.Model;
 
 namespace MultiWeatherApi.OpenWeather {
@@ -33,20 +34,20 @@ namespace MultiWeatherApi.OpenWeather {
         /// </summary>
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
-        /// <param name="unit">Default is <see cref="Unit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.En"/></param>
+        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
+        /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns></returns>
         public async Task<WeatherDto> GetCurrentWeather(
             double latitude, double longitude, 
-            Unit unit = Unit.Standard,
-            Language language = Language.En) {
+            OWUnit unit = OWUnit.Standard,
+            Language language = Language.English) {
 
             ThrowExceptionIfApiKeyInvalid();
 
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 try {
-                    var url = string.Format(WeatherCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToString().ToLower(), _apiKey);
+                    var url = string.Format(WeatherCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
                     return await ParseForecastFromResponse<WeatherDto>(response).ConfigureAwait(false);
@@ -69,20 +70,20 @@ namespace MultiWeatherApi.OpenWeather {
         /// 
         /// </summary>
         /// <param name="city"></param>
-        /// <param name="unit">Default is <see cref="Unit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.En"/></param>
+        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
+        /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns></returns>
         public async Task<WeatherDto> GetCurrentWeather(
             string city,
-            Unit unit = Unit.Standard,
-            Language language = Language.En) {
+            OWUnit unit = OWUnit.Standard,
+            Language language = Language.English) {
 
             ThrowExceptionIfApiKeyInvalid();
 
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 try {
-                    var url = string.Format(WeatherCityUri, city, unit.ToString().ToLower(), language.ToString().ToLower(), _apiKey);
+                    var url = string.Format(WeatherCityUri, city, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
                     return await ParseForecastFromResponse<WeatherDto>(response).ConfigureAwait(false);
@@ -106,20 +107,20 @@ namespace MultiWeatherApi.OpenWeather {
         /// </summary>
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
-        /// <param name="unit">Default is <see cref="Unit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.En"/></param>
+        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
+        /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns></returns>
         public async Task<Forecast> GetForecast(
             double latitude, double longitude,
-            Unit unit = Unit.Standard,
-            Language language = Language.En) {
+            OWUnit unit = OWUnit.Standard,
+            Language language = Language.English) {
 
             ThrowExceptionIfApiKeyInvalid();
 
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 try {
-                    var url = string.Format(ForecastCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToString().ToLower(), _apiKey);
+                    var url = string.Format(ForecastCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
                     return await ParseForecastFromResponse<Forecast>(response).ConfigureAwait(false);

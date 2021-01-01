@@ -60,29 +60,29 @@
                 <para>This property will be null until a request has been made.</para>
             </summary>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours and possible alerts
             </summary>
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours, the daily forecast for the next 7 days and possible alerts
             </summary>
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                The most general method to retrieve weather data and forecast for a particular latitude and longitude (full optional).
             </summary>
@@ -90,12 +90,12 @@
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
             <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -109,12 +109,12 @@
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="date">Requested date</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -129,11 +129,11 @@
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="date">Requested date</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 The most general method to retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -149,8 +149,8 @@
             <param name="date">Requested date</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
             <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
@@ -174,35 +174,40 @@
             </summary>
             <param name="response">Response received after successfully requesting weather data.</param>
         </member>
+        <member name="T:MultiWeatherApi.DarkSky.IDarkSkyService">
+            <summary>
+                The interface for the Dark Sky service. 
+            </summary>
+        </member>
         <member name="P:MultiWeatherApi.DarkSky.IDarkSkyService.ApiCallsMade">
             <summary>
                 Gets the number of API calls made today using the given API key.
                 <para>This property will be null until a request has been made.</para>
             </summary>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours and possible alerts
             </summary>
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetForecast(System.Double,System.Double,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours, the daily forecast for the next 7 days and possible alerts
             </summary>
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeather(System.Double,System.Double,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                The most general method to retrieves weather data and forecast for a particular latitude and longitude (full optional).
             </summary>
@@ -210,12 +215,12 @@
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
             <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default is <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -229,12 +234,12 @@
             <param name="latitude">The latitude to retrieve data for.</param>
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="date">Requested date</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTime,System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 Retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -249,12 +254,12 @@
             <param name="longitude">The longitude to retrieve data for.</param>
             <param name="date">Requested date</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Exclude},MultiWeatherApi.DarkSky.Model.Unit,MultiWeatherApi.DarkSky.Model.Language)">
+        <member name="M:MultiWeatherApi.DarkSky.IDarkSkyService.GetWeatherByDate(System.Double,System.Double,System.DateTimeOffset,System.Collections.Generic.IList{MultiWeatherApi.DarkSky.Model.Extend},System.Collections.Generic.IList{MultiWeatherApi.Model.Exclude},MultiWeatherApi.DarkSky.Model.DSUnit,MultiWeatherApi.Model.Language)">
             <summary>
                 The most general method to retrieve the observed (in the past) or forecasted (in the future) hour-by-hour weather and daily weather 
                 conditions for a particular date. A Time Machine request is identical in structure to a Forecast Request, except:
@@ -270,8 +275,8 @@
             <param name="date">Requested date</param>
             <param name="excludes">Any blocks that should be excluded from the request.</param>
             <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-            <param name="unit">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Unit.Auto"/></param>
-            <param name="language">Default <see cref="F:MultiWeatherApi.DarkSky.Model.Language.English"/></param>
+            <param name="unit">Default <see cref="!:Model.Unit.Auto"/></param>
+            <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> with the requested data, or null if the data was corrupted.</returns>
             <exception cref="T:System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
         </member>
@@ -984,13 +989,13 @@
         </member>
         <member name="T:MultiWeatherApi.DarkSky.Model.HourlyForecast">
             <summary>
-            An hour-by-hour forecast.
+                An hour-by-hour forecast.
             </summary>
         </member>
         <member name="P:MultiWeatherApi.DarkSky.Model.HourlyForecast.Summary">
             <summary>
             Gets or sets a human-readable summary of the forecast.
-            </summary>
+            </summary>  
         </member>
         <member name="P:MultiWeatherApi.DarkSky.Model.HourlyForecast.Icon">
             <summary>
@@ -1052,46 +1057,46 @@
             Gets or sets the individual minutes that make up this forecast.
             </summary>
         </member>
-        <member name="T:MultiWeatherApi.DarkSky.Model.Unit">
+        <member name="T:MultiWeatherApi.DarkSky.Model.DSUnit">
             <summary>
             Units of measurement supported by the Forecast service.
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.US">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.US">
             <summary>
-            US units of measurement.
+                Imperial US units of measurement.
             <para>
-            Summaries containing temperature or snow accumulation units have
-            their values in degrees Fahrenheit or inches (respectively).
-            Nearest storm distance: Miles
-            Precipitation intensity: Inches per hour
-            Precipitation accumulation: Inches
-            Temperature: Fahrenheit
-            Dew Point: Fahrenheit
-            Wind Speed: Miles per hour
-            Pressure: Millibars
-            Visibility: Miles
+                Summaries containing temperature or snow accumulation units have
+                their values in degrees Fahrenheit or inches (respectively).
+                Nearest storm distance: Miles
+                Precipitation intensity: Inches/hour
+                Precipitation accumulation: Inches
+                Temperature: Fahrenheit
+                Dew Point: Fahrenheit
+                Wind Speed: Miles/hour
+                Pressure: Millibars
+                Visibility: Miles
             </para>
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.SI">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.SI">
             <summary>
-            SI units of measurement.
+                SI units of measurement.
             <para>
-            Summaries containing temperature or snow accumulation units have
-            their values in degrees Celsius or centimeters (respectively).
-            Nearest storm distance: Kilometers
-            Precipitation intensity: Millimeters per hour
-            Precipitation accumulation: Centimeters
-            Temperature: Celsius
-            Dew Point: Celsius
-            Wind Speed: Meters per second
-            Pressure: Hectopascals (equivalent to millibars)
-            Visibility: Kilometers
+                Summaries containing temperature or snow accumulation units have
+                their values in degrees Celsius or centimeters (respectively).
+                Nearest storm distance: km
+                Precipitation intensity: mm/hour
+                Precipitation accumulation: cm
+                Temperature: Celsius
+                Dew Point: Celsius
+                Wind Speed: m/s
+                Pressure: Hectopascals (equivalent to millibars)
+                Visibility: km
             </para>
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.CA">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.CA">
             <summary>
             Canadian units of measurement. The same as SI, but with 
             kilometers per hour used for Wind Speed.
@@ -1109,7 +1114,7 @@
             </para>
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.UK">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.UK">
             <summary>
             UK units of measurement. The same as SI, but with miles per
             hour used for Wind Speed.
@@ -1127,7 +1132,7 @@
             </para>
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.UK2">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.UK2">
             <summary>
             UK units of measurement. The same as SI, except that 
             nearestStormDistance and visibility are in miles and windSpeed 
@@ -1146,9 +1151,9 @@
             </para>
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Unit.Auto">
+        <member name="F:MultiWeatherApi.DarkSky.Model.DSUnit.Auto">
             <summary>
-            Automatically choose units of measurement based on geographic location.
+                Automatically choose units of measurement based on geographic location.
             </summary>
         </member>
         <member name="T:MultiWeatherApi.DarkSky.Model.Extend">
@@ -1162,57 +1167,12 @@
             <para>Ignored when making time machine requests.</para>
             </summary>
         </member>
-        <member name="T:MultiWeatherApi.DarkSky.Model.Exclude">
-            <summary>
-            Data blocks that can be excluded from a request.
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Currently">
-            <summary>
-            The current data block, containing current weather conditions.
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Minutely">
-            <summary>
-            The minutely data block, containing minute-by-minute data for
-            the next hour.
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Hourly">
-            <summary>
-            The hourly data block, containing hour-by-hour data for
-            the next two days (or the next week, if extended).
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Daily">
-            <summary>
-            The daily data block, containing day-by-day data for
-            the next week.
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Alerts">
-            <summary>
-            A list of any severe weather alerts issued for the requested location.
-            </summary>
-        </member>
-        <member name="F:MultiWeatherApi.DarkSky.Model.Exclude.Flags">
-            <summary>
-            Associated metadata related to the request.
-            </summary>
-        </member>
-        <member name="T:MultiWeatherApi.DarkSky.Model.Language">
-            <summary>
-            Languages that the service can return text summaries in.
-            These are listed here in the order that they appear in the
-            Forecast.io API documentation.
-            </summary>
-        </member>
         <member name="T:MultiWeatherApi.DarkSky.Model.ParameterExtensions">
             <summary>
             Extension methods for the request parameter enumerations.
             </summary>
         </member>
-        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Unit)">
+        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.DSUnit)">
             <summary>
             Gives the Forecast Service-friendly name for
             this parameter.
@@ -1229,38 +1189,6 @@
             </exception>
         </member>
         <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Extend)">
-            <summary>
-            Gives the Forecast Service-friendly name for
-            this parameter.
-            </summary>
-            <param name="self">
-            The parameter to convert.
-            </param>
-            <returns>
-            The service-friendly <see cref="T:System.String"/>.
-            </returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            Thrown when the parameter does not have a corresponding
-            friendly name.
-            </exception>
-        </member>
-        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Exclude)">
-            <summary>
-            Gives the Forecast Service-friendly name for
-            this parameter.
-            </summary>
-            <param name="self">
-            The parameter to convert.
-            </param>
-            <returns>
-            The service-friendly <see cref="T:System.String"/>.
-            </returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            Thrown when the parameter does not have a corresponding
-            friendly name.
-            </exception>
-        </member>
-        <member name="M:MultiWeatherApi.DarkSky.Model.ParameterExtensions.ToValue(MultiWeatherApi.DarkSky.Model.Language)">
             <summary>
             Gives the Forecast Service-friendly name for
             this parameter.
@@ -1312,20 +1240,20 @@
                 Units of measurement supported by the Forecast service.
             </summary>
         </member>
-        <member name="F:MultiWeatherApi.Model.Unit.US">
+        <member name="F:MultiWeatherApi.Model.Unit.Imperial">
             <summary>
-                US units of measurement.
+                Imperial US units of measurement.
             <para>
-            Summaries containing temperature or snow accumulation units have
-            their values in degrees Fahrenheit or inches (respectively).
-            Nearest storm distance: Miles
-            Precipitation intensity: Inches per hour
-            Precipitation accumulation: Inches
-            Temperature: Fahrenheit
-            Dew Point: Fahrenheit
-            Wind Speed: Miles per hour
-            Pressure: Millibars
-            Visibility: Miles
+                Summaries containing temperature or snow accumulation units have
+                their values in degrees Fahrenheit or inches (respectively).
+                Nearest storm distance: Miles
+                Precipitation intensity: Inches/hour
+                Precipitation accumulation: Inches
+                Temperature: Fahrenheit
+                Dew Point: Fahrenheit
+                Wind Speed: Miles/hour
+                Pressure: Millibars
+                Visibility: Miles
             </para>
             </summary>
         </member>
@@ -1333,16 +1261,16 @@
             <summary>
                 SI units of measurement.
             <para>
-            Summaries containing temperature or snow accumulation units have
-            their values in degrees Celsius or centimeters (respectively).
-            Nearest storm distance: Kilometers
-            Precipitation intensity: Millimeters per hour
-            Precipitation accumulation: Centimeters
-            Temperature: Celsius
-            Dew Point: Celsius
-            Wind Speed: Meters per second
-            Pressure: Hectopascals (equivalent to millibars)
-            Visibility: Kilometers
+                Summaries containing temperature or snow accumulation units have
+                their values in degrees Celsius or centimeters (respectively).
+                Nearest storm distance: km
+                Precipitation intensity: mm/hour
+                Precipitation accumulation: cm
+                Temperature: Celsius
+                Dew Point: Celsius
+                Wind Speed: m/s
+                Pressure: Hectopascals (equivalent to millibars)
+                Visibility: km
             </para>
             </summary>
         </member>
@@ -1350,6 +1278,68 @@
             <summary>
                 Automatically choose units of measurement based on geographic location.
             </summary>
+        </member>
+        <member name="T:MultiWeatherApi.Model.Exclude">
+            <summary>
+                Data blocks that can be excluded from a request.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Currently">
+            <summary>
+                The current data block, containing current weather conditions.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Minutely">
+            <summary>
+                The minutely data block, containing minute-by-minute data for the next hour.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Hourly">
+            <summary>
+                The hourly data block, containing hour-by-hour data for the next two days (or the next week, if extended).
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Daily">
+            <summary>
+                The daily data block, containing day-by-day data for the next week.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Alerts">
+            <summary>
+                A list of any severe weather alerts issued for the requested location.
+            </summary>
+        </member>
+        <member name="F:MultiWeatherApi.Model.Exclude.Flags">
+            <summary>
+                Associated metadata related to the request.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.Model.Language">
+            <summary>
+                Languages that the service can return text summaries in.
+                These are listed here in the order that they appear in the Forecast.io API documentation.
+            </summary>
+        </member>
+        <member name="T:MultiWeatherApi.Model.ParameterExtensions">
+            <summary>
+                Extension methods for the request parameter enumerations.
+            </summary>
+        </member>
+        <member name="M:MultiWeatherApi.Model.ParameterExtensions.ToValue(MultiWeatherApi.Model.Exclude)">
+            <summary>
+                Gives the Forecast Service-friendly name for this parameter.
+            </summary>
+            <param name="self">The parameter to convert.</param>
+            <returns>The service-friendly <see cref="T:System.String"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the parameter does not have a corresponding friendly name.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.Model.ParameterExtensions.ToValue(MultiWeatherApi.Model.Language)">
+            <summary>
+                Gives the Forecast Service-friendly name for this parameter.
+            </summary>
+            <param name="self">The parameter to convert.</param>
+            <returns>The service-friendly <see cref="T:System.String"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the parameter does not have a corresponding friendly name.</exception>
         </member>
         <member name="P:MultiWeatherApi.OpenWeatherWrapper.ApiKey">
             <summary>Set the api key for the underneath weather service</summary>
@@ -1385,33 +1375,33 @@
             </summary>
             <param name="key">The API key to use.</param>
         </member>
-        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.OWUnit,MultiWeatherApi.Model.Language)">
             <summary>
             
             </summary>
             <param name="latitude"></param>
             <param name="longitude"></param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.OWUnit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns></returns>
         </member>
-        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.String,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.String,MultiWeatherApi.OpenWeather.Model.OWUnit,MultiWeatherApi.Model.Language)">
             <summary>
             
             </summary>
             <param name="city"></param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.OWUnit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns></returns>
         </member>
-        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetForecast(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.Unit,MultiWeatherApi.OpenWeather.Model.Language)">
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetForecast(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.OWUnit,MultiWeatherApi.Model.Language)">
             <summary>
             
             </summary>
             <param name="latitude"></param>
             <param name="longitude"></param>
-            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Unit.Standard"/></param>
-            <param name="language">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.Language.En"/></param>
+            <param name="unit">Default is <see cref="F:MultiWeatherApi.OpenWeather.Model.OWUnit.Standard"/></param>
+            <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns></returns>
         </member>
         <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.ParseForecastFromResponse``1(System.Net.Http.HttpResponseMessage)">

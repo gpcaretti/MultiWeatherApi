@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
-namespace MultiWeatherApi.DarkSky.Model
-{
+namespace MultiWeatherApi.DarkSky.Model {
     /// <summary>
     ///     A forecast for a particular location.
     /// </summary>
-    [DataContract]
+    [Serializable, DataContract]
     public class Forecast
     {
         /// <summary>
