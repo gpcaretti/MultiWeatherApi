@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using MultiWeatherApi.Model;
 using Newtonsoft.Json;
 
-namespace MultiWeatherApi.DarkSky.Model {
+namespace MultiWeatherApi.OpenWeather.Model {
 
     /// <summary>
-    ///     A forecast for a particular location.
+    ///     A 'darksky-like' set of weather contitions / forecast for a particular location
     /// </summary>
     [Serializable]
-    public class Forecast {
+    public class ForecastDSL {
 
         private GeoCoordinates _coordinates = new GeoCoordinates();
 
-        /// <summary>the geo coordinates of this forecast</summary>
+        /// <summary>
+        ///     the geo coordinates of this forecast.
+        /// </summary>
         public GeoCoordinates Coordinates {
             get => _coordinates;
             set => _coordinates = value;
@@ -28,59 +30,57 @@ namespace MultiWeatherApi.DarkSky.Model {
         /// <summary>
         ///     the time zone offset, in hours from GMT.
         /// </summary>
-        [JsonProperty("offset")]
-        public double TimeZoneOffset { get; set; }
+        [JsonProperty("timezone_offset")]
+        public int TimeZoneOffset { get; set; }
 
         /// <summary>
         ///     the current conditions at the requested location.
         /// </summary>
-        [JsonProperty("currently")]
-        public DataPoint Currently { get; set; }
+        [JsonProperty("current")]
+        public DataPointDSL Current { get; set; }
 
         /// <summary>
         ///     the minute-by-minute conditions for the next hour.
         /// </summary>
         [JsonProperty("minutely")]
-        public ForecastDetails Minutely { get; set; }
+        public IList<MinutelyDataPoint> Minutely { get; set; }
 
         /// <summary>
-        ///     the hour-by-hour conditions for the next two days.
+        ///     the hour-by-hour conditions for the next two days
         /// </summary>
         [JsonProperty("hourly")]
-        public ForecastDetails Hourly { get; set; }
+        public IList<DataPointDSL> Hourly { get; set; }
 
         /// <summary>
-        ///     the daily conditions for the next week.
+        ///     the day-by-day conditions for the urrent and the next 7 days.
         /// </summary>
         [JsonProperty("daily")]
-        public ForecastDetails Daily { get; set; }
-
-        /// <summary>
-        ///     the metadata (flags) associated with this forecast.
-        /// </summary>
-        [JsonProperty("flags")]
-        public Flags Flags { get; set; }
+        public IList<DataPointDSL> Daily { get; set; }
 
         /// <summary>
         ///     any weather alerts related to this location.
         /// </summary>
-        [JsonProperty("alerts")]
+        [JsonProperty("alerts")]    //, JsonConverter(typeof(MyAlertsConverter))]
         public IList<Alert> Alerts { get; set; }
 
-        #region Internals
-
-        [JsonProperty("latitude")]
-        internal double Latitude {
+        /// <summary>
+        ///     the latitude of this forecast.
+        /// </summary>
+        [JsonProperty("lat")]
+        internal double Latitude { 
             //get => _coordinates.Latitude;
             set => _coordinates.Latitude = value;
         }
 
-        [JsonProperty("longitude")]
+        /// <summary>
+        ///     the longitude of this forecast.
+        /// </summary>
+        [JsonProperty("lon")]
         internal double Longitude {
             //get => _coordinates.Longitude;
             set => _coordinates.Longitude = value;
         }
 
-        #endregion
     }
+
 }

@@ -2,7 +2,10 @@
 
 namespace MultiWeatherApi {
 
-    internal static class DateTimeHelper {
+    /// <summary>
+    ///     Helper methods for <see cref="DateTimeHelper"/>
+    /// </summary>
+    public static class DateTimeHelper {
 
         /// <summary>
         ///     DateTime representing 0 Unix time: January 1, 1970, GMT.

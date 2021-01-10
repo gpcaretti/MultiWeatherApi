@@ -7,10 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\DarkSky_onecall.json" />
+    <None Remove="Resources\OpenW_currentweather.json" />
+    <None Remove="Resources\OpenW_onecall.json" />
     <None Remove="xunit.config.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\OpenW_currentweather.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OpenW_onecall.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DarkSky_onecall.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="xunit.config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

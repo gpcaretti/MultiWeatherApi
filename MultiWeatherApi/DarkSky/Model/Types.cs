@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace MultiWeatherApi.DarkSky.Model
-{
+namespace MultiWeatherApi.DarkSky.Model {
+
     /// <summary>
-    /// Units of measurement supported by the Forecast service.
+    ///     Units of measurement supported by the Forecast service.
     /// </summary>
     public enum DSUnit
     {

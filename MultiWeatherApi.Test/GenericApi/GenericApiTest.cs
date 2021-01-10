@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi;
 using MultiWeatherApi.DarkSky;
@@ -9,9 +11,9 @@ using Xunit;
 namespace GenericApi.Test {
 
     /// <summary>
-    /// Tests for the main ForecastApi class.
+    ///     Tests for the main ForecastApi class.
     /// </summary>
-    public class ApiTests {
+    public class GenericApiTest {
         // These coordinates came from the Forecast API documentation, and should return forecasts with all blocks.
         private const double AlcatrazLatitude = 37.8267;
         private const double AlcatrazLongitude = -122.423;
@@ -29,9 +31,9 @@ namespace GenericApi.Test {
         /// <summary>
         ///     Sets up all tests by retrieving the API key from cfg file.
         /// </summary>
-        public ApiTests() {
+        public GenericApiTest() {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("xunit.config.json")
+                .AddJsonFile("./xunit.config.json")
                 .Build();
             _darkSkyApiKey = config["DarkSkyApiKey"];
             _openWeatherApiKey = config["OpenWeatherApiKey"];
@@ -53,9 +55,16 @@ namespace GenericApi.Test {
             Should.ThrowAsync<InvalidOperationException>(async () => await owClient.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="apiKey"></param>
+        /// <returns></returns>
         private IWeatherService CreateService<T>(string apiKey) where T : WeatherServiceBase {
             return new WeatherFactory().Create<T>(apiKey);
         }
+
 
     }
 

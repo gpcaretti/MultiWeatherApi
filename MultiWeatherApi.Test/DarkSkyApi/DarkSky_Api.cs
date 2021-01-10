@@ -10,12 +10,12 @@ using MultiWeatherApi.Model;
 using Shouldly;
 using Xunit;
 
-namespace DarkSkyApi.Test {
+namespace DarkSky.Test {
 
     /// <summary>
     ///     Tests for the main ForecastApi class.
     /// </summary>
-    public class ApiTests {
+    public class DarkSky_Api {
         // These coordinates came from the Forecast API documentation, and should return forecasts with all blocks.
         private const double AlcatrazLatitude = 37.8267;
         private const double AlcatrazLongitude = -122.423;
@@ -34,7 +34,7 @@ namespace DarkSkyApi.Test {
         /// <summary>
         ///     Sets up all tests by retrieving the API key from app.config.
         /// </summary>
-        public ApiTests() {
+        public DarkSky_Api() {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("xunit.config.json")
                 .Build();
@@ -80,8 +80,8 @@ namespace DarkSkyApi.Test {
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
             Assert.NotNull(result.Daily);
-            Assert.NotNull(result.Daily.Days);
-            result.Daily.Days.Count.ShouldBeGreaterThan(0);
+            Assert.NotNull(result.Daily.Data);
+            result.Daily.Data.Count.ShouldBeGreaterThan(0);
         }
 
         /// <summary>
@@ -188,13 +188,13 @@ namespace DarkSkyApi.Test {
 
             Assert.NotNull(result.Currently);
             Assert.NotNull(result.Daily);
-            Assert.NotNull(result.Daily.Days);
-            Assert.NotEmpty(result.Daily.Days);
+            Assert.NotNull(result.Daily.Data);
+            Assert.NotEmpty(result.Daily.Data);
 
-            var today = DateTime.Today;
+            DateTimeOffset today =  DateTime.Today;
 
             Assert.Equal(result.Currently.Time.LocalDateTime.Date, today);
-            Assert.Equal(result.Daily.Days[0].Time.LocalDateTime.Date, today);
+            Assert.Equal(result.Daily.Data[0].Time.LocalDateTime.Date, today);
         }
 
         /// <summary>
@@ -222,6 +222,57 @@ namespace DarkSkyApi.Test {
 
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
+        }
+
+        [Fact]
+        public async Task GetForecast_ByCoordinates_Test() {
+            // prepare
+            var client = new DarkSkyService(_apiKey);
+            var output = await client.GetForecast(BolognaLatitude, BolognaLongitude, DSUnit.SI, Language.Italian);
+            // assert
+            Assert.NotNull(output);
+            Assert.NotNull(output.Currently);
+            Assert.NotNull(output.Daily);
+            output.Coordinates.Latitude.ShouldNotBe(0.0);
+            output.Coordinates.Longitude.ShouldNotBe(0.0);
+            output.Coordinates.Latitude.ShouldBe(BolognaLatitude);
+            output.Coordinates.Longitude.ShouldBe(BolognaLongitude);
+            output.Currently.Temperature.Daily.ShouldNotBeNull();
+            output.Currently.Temperature.DewPoint.ShouldNotBe(0.0f);
+            output.Currently.Temperature.Humidity.ShouldNotBeNull();
+            output.Currently.Temperature.Humidity.Value.ShouldBeInRange(1, 100);
+            output.Daily.Summary.ShouldNotBeNullOrWhiteSpace();
+            output.Daily.Data.Count.ShouldBeGreaterThan(0);
+            var yesterday = DateTime.Today.AddDays(-1);
+            output.Daily.Data[0].Time.ShouldBeGreaterThan(yesterday);
+            output.Daily.Data[0].Temperature.Pressure.ShouldNotBeNull();
+            output.Daily.Data[0].Temperature.Pressure.Value.ShouldBeGreaterThan(0);
+            output.Daily.Data[0].Temperature.Min.ShouldNotBeNull();
+            output.Daily.Data[0].Temperature.Max.ShouldNotBeNull();
+            output.Daily.Data[0].Temperature.Min.Value.ShouldBeLessThan(output.Daily.Data[0].Temperature.Max.Value);
+
+            // prepare imperial
+            var outputImperial = await client.GetForecast(BolognaLatitude, BolognaLongitude, DSUnit.US, Language.English);
+            // assert
+            Assert.NotNull(outputImperial);
+            Assert.NotNull(outputImperial.Currently);
+            Assert.NotNull(outputImperial.Daily);
+            outputImperial.Coordinates.Latitude.ShouldBe(output.Coordinates.Latitude);
+            outputImperial.Coordinates.Longitude.ShouldBe(output.Coordinates.Longitude);
+            outputImperial.Currently.Temperature.Daily.ShouldNotBeNull();
+            outputImperial.Currently.Temperature.Daily.Value.ShouldBeGreaterThan(output.Currently.Temperature.Daily.Value);
+            outputImperial.Currently.Temperature.DewPoint.ShouldNotBe(output.Currently.Temperature.DewPoint);
+            outputImperial.Currently.Temperature.Humidity.ShouldNotBeNull();
+            outputImperial.Currently.Temperature.Humidity.Value.ShouldBeInRange(1, 100);
+            outputImperial.Daily.Data[0].Temperature.Min.ShouldNotBeNull();
+            outputImperial.Daily.Data[0].Temperature.Max.ShouldNotBeNull();
+            outputImperial.Daily.Data[0].Temperature.Min.Value.ShouldBeLessThan(outputImperial.Daily.Data[0].Temperature.Max.Value);
+            outputImperial.Daily.Data[0].ApparentTemperature.Min.Value.ShouldBeLessThan(outputImperial.Daily.Data[0].ApparentTemperature.Max.Value);
+            outputImperial.Daily.Data[0].Temperature.Min.Value.ShouldBeGreaterThan(output.Daily.Data[0].Temperature.Min.Value);
+            outputImperial.Daily.Data[0].Temperature.Max.Value.ShouldBeGreaterThan(output.Daily.Data[0].Temperature.Max.Value);
+            outputImperial.Daily.Data[0].Temperature.DewPoint.ShouldNotBe(output.Daily.Data[0].Temperature.DewPoint);
+            outputImperial.Daily.Data[0].Temperature.Humidity.ShouldNotBeNull();
+            outputImperial.Daily.Data[0].Temperature.Humidity.Value.ShouldBeInRange(1, 100);
         }
 
         /// <summary>

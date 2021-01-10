@@ -1,0 +1,46 @@
+﻿{
+	"$$note": "OpenWeatherMap 'current weather data' json outcome",
+	"$$see": "https://openweathermap.org/current",
+
+	"coord": {
+		"lon": 11.4333,
+		"lat": 44.4667
+	},
+	"weather": [
+		{
+			"id": 802,
+			"main": "Clouds",
+			"description": "nubi sparse",
+			"icon": "03d"
+		}
+	],
+	"base": "stations",
+	"main": {
+		"temp": 1.68,
+		"feels_like": -2,
+		"temp_min": 1,
+		"temp_max": 2.22,
+		"pressure": 1019,
+		"humidity": 93
+	},
+	"visibility": 6000,
+	"wind": {
+		"speed": 2.57,
+		"deg": 250
+	},
+	"clouds": {
+		"all": 40
+	},
+	"dt": 1610183432,
+	"sys": {
+		"type": 1,
+		"id": 6758,
+		"country": "IT",
+		"sunrise": 1610174975,
+		"sunset": 1610207568
+	},
+	"timezone": 3600,
+	"id": 3181927,
+	"name": "Bologna",
+	"cod": 200
+}

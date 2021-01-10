@@ -271,10 +271,11 @@ namespace MultiWeatherApi.DarkSky {
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 var response = await client.GetAsync(requestUrl).ConfigureAwait(false);
-                //var v1 = response.Content.ReadAsStringAsync();
                 ThrowExceptionIfResponseError(response);
                 UpdateApiCallsMade(response);
-                return await ParseForecastFromResponse<Forecast>(response).ConfigureAwait(false);
+                using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                    return ParseJsonFromStream<Forecast>(responseStream);
+                }
             }
         }
 

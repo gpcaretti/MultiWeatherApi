@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MultiWeatherApi.Model;
+using MultiWeatherApi.OpenWeather.Helpers;
 using MultiWeatherApi.OpenWeather.Model;
 
 namespace MultiWeatherApi.OpenWeather {
@@ -29,15 +31,7 @@ namespace MultiWeatherApi.OpenWeather {
             : base(key) {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="latitude"></param>
-        /// <param name="longitude"></param>
-        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.English"/></param>
-        /// <returns></returns>
-        public async Task<WeatherDto> GetCurrentWeather(
+        public async Task<WeatherConditions> GetCurrentWeather(
             double latitude, double longitude, 
             OWUnit unit = OWUnit.Standard,
             Language language = Language.English) {
@@ -47,10 +41,12 @@ namespace MultiWeatherApi.OpenWeather {
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 try {
-                    var url = string.Format(WeatherCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
+                    var url = string.Format(WeatherCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
-                    return await ParseForecastFromResponse<WeatherDto>(response).ConfigureAwait(false);
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                        return ParseJsonFromStream<WeatherConditions>(responseStream);
+                    }
                 }
                 catch (WeatherException) {
                     throw;
@@ -66,14 +62,7 @@ namespace MultiWeatherApi.OpenWeather {
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="city"></param>
-        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.English"/></param>
-        /// <returns></returns>
-        public async Task<WeatherDto> GetCurrentWeather(
+        public async Task<WeatherConditions> GetCurrentWeather(
             string city,
             OWUnit unit = OWUnit.Standard,
             Language language = Language.English) {
@@ -86,7 +75,71 @@ namespace MultiWeatherApi.OpenWeather {
                     var url = string.Format(WeatherCityUri, city, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
-                    return await ParseForecastFromResponse<WeatherDto>(response).ConfigureAwait(false);
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                        return ParseJsonFromStream<WeatherConditions>(responseStream);
+                    }
+                }
+                catch (WeatherException) {
+                    throw;
+                }
+                catch (HttpRequestException ex) {
+                    throw new WeatherException(
+                        WeatherException.HttpError,
+                        !string.IsNullOrWhiteSpace(ex.Message) ? ex.Message : "Couldn't retrieve data");
+                }
+                catch (Exception ex) {
+                    throw new WeatherException(ex.Message, ex);
+                }
+            }
+        }
+
+        public async Task<MultiWeatherConditions> GetForecast(
+            double latitude, double longitude,
+            OWUnit unit = OWUnit.Standard,
+            Language language = Language.English) {
+
+            ThrowExceptionIfApiKeyInvalid();
+
+            var compressionHandler = GetCompressionHandler();
+            using (var client = new HttpClient(compressionHandler)) {
+                try {
+                    var url = string.Format(ForecastCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
+                    HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
+                    ThrowExceptionIfResponseError(response);
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                        return ParseJsonFromStream<MultiWeatherConditions>(responseStream, new MyAlertConverter());
+                    }
+                }
+                catch (WeatherException) {
+                    throw;
+                }
+                catch (HttpRequestException ex) {
+                    throw new WeatherException(
+                        WeatherException.HttpError,
+                        !string.IsNullOrWhiteSpace(ex.Message) ? ex.Message : "Couldn't retrieve data");
+                }
+                catch (Exception ex) {
+                    throw new WeatherException(ex.Message, ex);
+                }
+            }
+        }
+
+        public async Task<MultiWeatherConditions> GetForecast(
+            string city,
+            OWUnit unit = OWUnit.Standard,
+            Language language = Language.English) {
+
+            ThrowExceptionIfApiKeyInvalid();
+
+            var compressionHandler = GetCompressionHandler();
+            using (var client = new HttpClient(compressionHandler)) {
+                try {
+                    var url = string.Format(ForecastCityUri, city, unit.ToString().ToLower(), language.ToValue(), _apiKey);
+                    HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
+                    ThrowExceptionIfResponseError(response);
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                        return ParseJsonFromStream<MultiWeatherConditions>(responseStream);
+                    }
                 }
                 catch (WeatherException) {
                     throw;
@@ -107,11 +160,12 @@ namespace MultiWeatherApi.OpenWeather {
         /// </summary>
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
-        /// <param name="unit">Default is <see cref="OWUnit.Standard"/></param>
-        /// <param name="language">Default is <see cref="Language.English"/></param>
+        /// <param name="unit"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
-        public async Task<Forecast> GetForecast(
-            double latitude, double longitude,
+        public async Task<ForecastDSL> GetForecastDSL(
+            double latitude,
+            double longitude,
             OWUnit unit = OWUnit.Standard,
             Language language = Language.English) {
 
@@ -120,10 +174,12 @@ namespace MultiWeatherApi.OpenWeather {
             var compressionHandler = GetCompressionHandler();
             using (var client = new HttpClient(compressionHandler)) {
                 try {
-                    var url = string.Format(ForecastCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
+                    var url = string.Format(ForecastOneCallUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
-                    return await ParseForecastFromResponse<Forecast>(response).ConfigureAwait(false);
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                        return ParseJsonFromStream<ForecastDSL>(responseStream);
+                    }
                 }
                 catch (WeatherException) {
                     throw;
@@ -136,29 +192,6 @@ namespace MultiWeatherApi.OpenWeather {
                 catch (Exception ex) {
                     throw new WeatherException(ex.Message, ex);
                 }
-            }
-        }
-
-
-
-
-
-
-        /// <summary>
-        ///     Wrap the default parser to catch the possible parser exceptions in a <see cref="WeatherException"/>
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="response"></param>
-        /// <returns>the parsed object or a <see cref="WeatherException"/></returns>
-        protected override async Task<TResult> ParseForecastFromResponse<TResult>(HttpResponseMessage response) {
-            try {
-                return await base.ParseForecastFromResponse<TResult>(response).ConfigureAwait(false);
-            }
-            catch (System.Runtime.Serialization.SerializationException jex) {
-                throw new WeatherException(WeatherException.JsonParsingError, jex.Message, jex);
-            }
-            catch (System.Runtime.Serialization.InvalidDataContractException jex) {
-                throw new WeatherException(WeatherException.JsonParsingError, jex.Message, jex);
             }
         }
 

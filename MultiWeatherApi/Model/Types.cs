@@ -3,6 +3,24 @@
 namespace MultiWeatherApi.Model {
 
     /// <summary>
+    ///     Represents the severity of a weather alert.
+    /// </summary>
+    public enum Severity {
+        /// <summary>This alert indicates that individuals should be aware of potentially severe weather.</summary>
+        Advisory,
+
+        /// <summary>This alert indicates that individuals should prepare for potentially severe weather.</summary>
+        Watch,
+
+        /// <summary>This alert indicates that individuals should take immediate action to protect themselves and others from potentially severe weather.</summary>
+        Warning,
+
+        /// <summary>The severity of this alert is not recognized/defined</summary>
+        Unknown = 100
+    }
+
+
+    /// <summary>
     ///     Units of measurement supported by the Forecast service.
     /// </summary>
     public enum Unit {
@@ -128,7 +146,35 @@ namespace MultiWeatherApi.Model {
     /// <summary>
     ///     Extension methods for the request parameter enumerations.
     /// </summary>
-    public static class ParameterExtensions {
+    public static class TypesExtensions {
+
+        /// <summary>String to severity</summary>
+        public static Severity SeverityFromString(this string self, string severity) {
+            switch (self?.ToLowerInvariant() ?? "") {
+                case "advisory":
+                    return Severity.Advisory;
+                case "watch":
+                    return Severity.Watch;
+                case "warning":
+                    return Severity.Warning;
+                default:
+                    return Severity.Unknown;
+            }
+        }
+
+        /// <summary>Severity to string</summary>
+        public static string ToValue(this Severity severity) {
+            switch (severity) {
+                case Severity.Advisory:
+                    return "advisory";
+                case Severity.Watch:
+                    return "watch";
+                case Severity.Warning:
+                    return "warning";
+                default:
+                    return "unknown";
+            }
+        }
 
         /// <summary>
         ///     Gives the Forecast Service-friendly name for this parameter.

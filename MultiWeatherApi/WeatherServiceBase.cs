@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
+using MultiWeatherApi.OpenWeather.Helpers;
+using Newtonsoft.Json;
 
 namespace MultiWeatherApi {
 
@@ -33,16 +35,32 @@ namespace MultiWeatherApi {
         }
 
         /// <summary>
-        ///     Given a successful response from the forecast service, parses the weather data contained within and returns it.
+        ///     Given a successful response from the forecast service, read the stream and parses it as weather data
         /// </summary>
-        /// <param name="response">A successful response containing weather data.</param>
+        /// <param name="jsonStream">A successful stream containing weather data in json format</param>
+        /// <param name="customConverters">An optional array of custom converts</param>
         /// <returns>A <see cref="Task"/> for an object containing the weather data from the response.</returns>
-        /// <remarks>This implementation is based on standard .NET json deserializer. Can throw HTTP and serializer exceptions.</remarks>
-        protected virtual async Task<TResult> ParseForecastFromResponse<TResult>(HttpResponseMessage response) /*where TResult: object*/ {
-            using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                var serializer = new DataContractJsonSerializer(typeof(TResult));
-                return (TResult)serializer.ReadObject(responseStream);
+        /// <remarks>throw a <see cref="WeatherException" /> with <see cref="WeatherException.JsonParsingError"/></remarks>
+        /// <exception cref="WeatherException">thrown new WeatherException(WeatherException.JsonParsingError, jex.Message, jex)</exception>
+        protected virtual TResult ParseJsonFromStream<TResult>(Stream jsonStream, params JsonConverter[] customConverters) /*where TResult: object*/ {
+            try {
+                using (var jsonReader = new JsonTextReader(new StreamReader(jsonStream))) {
+                    var serializer = new JsonSerializer();
+                    for (int i = 0; i < customConverters.Length; i++) {
+                        serializer.Converters.Add(customConverters[0]);
+                    }
+                    return serializer.Deserialize<TResult>(jsonReader);
+                }
             }
+            catch (Newtonsoft.Json.JsonException jex) {
+                throw new WeatherException(WeatherException.JsonParsingError, jex.Message, jex);
+            }
+
+            // ==== this section is based on System.Text.Json instead of Newtonsoft.Json
+            //    return await System.Text.Json.JsonSerializer.DeserializeAsync<TResult>(responseStream);
+            //    //var serializer = new DataContractJsonSerializer(typeof(TResult));
+            //    //return (TResult)serializer.ReadObject(responseStream);
+            // === end
         }
 
         /// <summary>
