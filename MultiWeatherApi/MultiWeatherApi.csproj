@@ -11,7 +11,7 @@
 		<RepositoryType>GitHub</RepositoryType>
 		<ApplicationIcon>packageIcon.ico</ApplicationIcon>
 		<PackageIcon>packageIcon.png</PackageIcon>
-		<version>1.0.0-alpha2</version>
+		<version>1.0.0-alpha3</version>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>

@@ -9,11 +9,7 @@ namespace MultiWeatherApi {
 
     internal class DarkSkyWrapper : IWeatherService {
 
-        public static readonly Guid _uniqueGuid = new Guid("9176F103-2BCA-4C20-A8BE-9E8C63690F89");
         private IDarkSkyService _service;
-
-        /// <summary>Unique guid Id of this service</summary>
-        public Guid Id { get => _uniqueGuid; }
 
         /// <summary>Set the api key for the underneath weather service</summary>
         public string ApiKey { set => _service = new DarkSkyService(value); }

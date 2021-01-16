@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MultiWeatherApi.OpenWeather.Helpers;
 using Newtonsoft.Json;
 
 namespace MultiWeatherApi {

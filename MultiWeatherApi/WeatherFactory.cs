@@ -11,45 +11,22 @@ namespace MultiWeatherApi {
     /// </summary>
     public class WeatherFactory {
 
-        protected static readonly object _servicesLock = new object();
-        protected static readonly IDictionary<Guid, Type> _availableServices = new Dictionary<Guid, Type>(8);
-
-        public static ICollection<Guid> ServiceKeys { get => _availableServices.Keys; }
+        public static readonly Guid DarkSkyServiceId = new Guid("B9AD579A-27BB-4C93-B0BA-253AD7D64456");
+        public static readonly Guid OpenWeatherServiceId = new Guid("32B4F4D9-DA26-4F47-9826-FB8E6C5F298D");
 
         static WeatherFactory() {
             // init the tinyMapper maps
             Mappering.Maps();
         }
 
-        public WeatherFactory() {
-            // register the available services
-            RegisterServices();
-        }
-
-        public IWeatherService Create(Guid serviceId, params object[] args) {
-            if (_availableServices.TryGetValue(serviceId, out Type type))
-                return (IWeatherService)Activator.CreateInstance(type, args);
+        public IWeatherService Create(Guid serviceId, string apiKey) {
+            if (WeatherFactory.DarkSkyServiceId.Equals(serviceId)) {
+                return new DarkSkyWrapper(apiKey);
+            } else if (WeatherFactory.OpenWeatherServiceId.Equals(serviceId)) {
+                return new OpenWeatherWrapper(apiKey);
+            }
 
             throw new ArgumentException($"No type registered for the passed service id ({serviceId})");
-        }
-
-        protected virtual void RegisterServices() {
-            RegisterIfNotExist<OpenWeatherWrapper>(OpenWeatherWrapper._uniqueGuid);
-            RegisterIfNotExist<DarkSkyWrapper>(DarkSkyWrapper._uniqueGuid);
-        }
-
-        public virtual void RegisterIfNotExist<TDerived>(Guid id) where TDerived : IWeatherService {
-            var type = typeof(TDerived);
-            if (type.IsInterface || type.IsAbstract /*|| !typeof(IWeatherService).IsAssignableFrom(type) */) {
-                throw new ArgumentException($"Only concreted implementation of {typeof(IWeatherService)} can be passed to this method.", nameof(TDerived));
-            }
-            
-            // before register it, double check the id is not yet present
-            if (!_availableServices.ContainsKey(id)) {
-                lock (_servicesLock) {
-                    if (!_availableServices.ContainsKey(id)) _availableServices.Add(id, type);
-                }
-            }
         }
 
     }

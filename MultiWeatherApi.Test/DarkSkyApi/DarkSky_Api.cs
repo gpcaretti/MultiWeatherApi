@@ -74,7 +74,7 @@ namespace DarkSky.Test {
             var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude);
             Assert.NotNull(result);
             Assert.NotNull(result.Currently);
-            Assert.Null(result.Daily);
+            Assert.NotNull(result.Hourly);
 
             result = await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude);
             Assert.NotNull(result);

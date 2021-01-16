@@ -9,9 +9,6 @@ namespace MultiWeatherApi {
     /// </summary>
     public interface IWeatherService {
 
-        /// <summary>Unique Id of this service</summary>
-        Guid Id { get; }
-
         /// <summary>
         ///    Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours and possible alerts
         /// </summary>

@@ -67,6 +67,7 @@ namespace MultiWeatherApi.DarkSky.Model {
 
         /// <summary>Sunrise time (UTC). See also <see cref="SunsetUnixTime"/></summary>
         /// <remarks>Null for hourly details</remarks>
+        [JsonProperty("sunriseTime_offset")]
         public DateTimeOffset? SunriseTime {
             get => (DateTimeOffset?)(SunriseUnixTime?.ToDateTimeOffset());
             set => SunriseUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
@@ -74,6 +75,7 @@ namespace MultiWeatherApi.DarkSky.Model {
 
         /// <summary>Sunset time (UTC). See also <see cref="SunsetUnixTime"/></summary>
         /// <remarks>Null for hourly details</remarks>
+        [JsonProperty("sunsetTime_offset")]
         public DateTimeOffset? SunsetTime {
             get => (DateTimeOffset?)(SunsetUnixTime?.ToDateTimeOffset());
             set => SunsetUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;

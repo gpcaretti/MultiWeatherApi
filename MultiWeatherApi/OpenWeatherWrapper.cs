@@ -9,12 +9,7 @@ namespace MultiWeatherApi {
 
     internal class OpenWeatherWrapper : IWeatherService {
 
-        public static readonly Guid _uniqueGuid = new Guid("441096B2-972C-4403-ADC9-A240E44350D6");
-
         private IOpenWeatherService _service;
-
-        /// <summary>Unique guid Id of this service</summary>
-        public Guid Id { get => _uniqueGuid; }
 
         /// <summary>Set the api key for the underneath weather service</summary>
         public string ApiKey { set => _service = new OpenWeatherService(value); }
