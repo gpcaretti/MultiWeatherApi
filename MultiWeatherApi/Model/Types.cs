@@ -40,7 +40,7 @@ namespace MultiWeatherApi.Model {
         ///     Visibility: Miles
         /// </para>
         /// </summary>
-        Imperial,
+        Imperial = 0,
 
         /// <summary>
         ///     SI units of measurement.
@@ -57,12 +57,12 @@ namespace MultiWeatherApi.Model {
         ///     Visibility: km
         /// </para>
         /// </summary>
-        SI,
+        SI = 1,
 
         /// <summary>
         ///     Automatically choose units of measurement based on geographic location.
         /// </summary>
-        Auto
+        Auto = 100
     }
 
     /// <summary>

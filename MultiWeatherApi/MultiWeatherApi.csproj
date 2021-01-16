@@ -11,11 +11,10 @@
 		<RepositoryType>GitHub</RepositoryType>
 		<ApplicationIcon>packageIcon.ico</ApplicationIcon>
 		<PackageIcon>packageIcon.png</PackageIcon>
+		<version>1.0.0-alpha2</version>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
-  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
@@ -23,6 +22,14 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="TinyMapper" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\packageIcon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

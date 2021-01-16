@@ -31,5 +31,15 @@ namespace MultiWeatherApi {
             var seconds = time.Subtract(BaseUnixTime).TotalSeconds;
             return (int)seconds;
         }
+
+        /// <summary>
+        ///     Converts this DateTime to Unix time (seconds since January 1, 1970 UTC).
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns>The number of seconds since January 1, 1970 UTC.</returns>
+        public static int ToUnixTime(this DateTime time) {
+            var dtOffset = (DateTimeOffset)time;
+            return dtOffset.ToUnixTime();
+        }
     }
 }

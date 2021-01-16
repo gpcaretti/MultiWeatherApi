@@ -177,8 +177,11 @@ namespace MultiWeatherApi.OpenWeather {
                     var url = string.Format(ForecastOneCallUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue(), _apiKey);
                     HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
                     ThrowExceptionIfResponseError(response);
+#if DEBUG
+                    var v = await response.Content.ReadAsStringAsync();
+#endif                    
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                        return ParseJsonFromStream<ForecastDSL>(responseStream);
+                    return ParseJsonFromStream<ForecastDSL>(responseStream);
                     }
                 }
                 catch (WeatherException) {

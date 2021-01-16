@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using GenericApi.Test;
+using Helpers;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather.Helpers;
@@ -17,11 +18,6 @@ namespace OpenWeather.Test {
     ///     Tests of serialize/deserialize to/from json files
     /// </summary>
     public class OpenWeather_Json {
-        // These coordinates came from the Forecast API documentation, and should return forecasts with all blocks.
-        private const double BolognaLatitude = 44.482732;
-        private const double BolognaLongitude = 11.352134;
-        private const string BolognaCityName = "Bologna";
-
         private string _openWeatherApiKey;
         private string _darkSkyApiKey;
 
@@ -42,7 +38,7 @@ namespace OpenWeather.Test {
 
             var client = new WrapperClassForTest(_openWeatherApiKey);
             using (var jsonStream = File.OpenRead(filename)) {
-                var output = client.ParseJsonFromStream_Wrapper<WeatherConditions>(jsonStream);
+                var output = client.ParseJsonFromStream_Wrapper<MultiWeatherApi.OpenWeather.Model.WeatherConditions>(jsonStream);
                 output.Coordinates.Latitude.ShouldBe(44.4667);
                 output.Coordinates.Longitude.ShouldBe(11.4333);
                 output.WeatherInfo[0].Summary.ShouldBe("Clouds");
@@ -59,9 +55,9 @@ namespace OpenWeather.Test {
             var filename = "./Resources/OpenW_currentweather.json";
             var client = new WrapperClassForTest(_openWeatherApiKey);
 
-            WeatherConditions input = null;
+            MultiWeatherApi.OpenWeather.Model.WeatherConditions input = null;
             using (var jsonStream = File.OpenRead(filename)) {
-                input = client.ParseJsonFromStream_Wrapper<WeatherConditions>(jsonStream);
+                input = client.ParseJsonFromStream_Wrapper<MultiWeatherApi.OpenWeather.Model.WeatherConditions>(jsonStream);
             }
 
             string outputJson = null;
@@ -118,23 +114,24 @@ namespace OpenWeather.Test {
                 output.TimeZone.ShouldBe("Europe/Rome");
                 output.TimeZoneOffset.ShouldBe(3600);
 
-                output.Current.ShouldNotBeNull();
-                output.Current.Time.ToUnixTimeSeconds().ShouldBe(1609711216L);
-                output.Current.Wind.Speed.ShouldBe(1.5f);
-                output.Current.Wind.Bearing.ShouldBe(260);
-                output.Current.Visibility.ShouldBe(10000);
-                output.Current.Rain.ShouldBe(0.24f);
-                output.Current.ProbOfPrecipitation.ShouldBeNull();
-                output.Current.SunriseTime.Value.ToUnixTimeSeconds().ShouldBe(1609656638);
-                output.Current.SunsetTime.Value.ToUnixTimeSeconds().ShouldBe(1609688798);
+                output.Currently.ShouldNotBeNull();
+                output.Currently.Time.ToUnixTimeSeconds().ShouldBe(1609711216L);
+                output.Currently.Wind.Speed.ShouldBe(1.5f);
+                output.Currently.Wind.Bearing.ShouldBe(260);
+                output.Currently.Visibility.ShouldBe(10000);
+                output.Currently.Rain.ShouldBe(0.24f);
+                output.Currently.Snow.ShouldBe(1.01f);
+                output.Currently.ProbOfPrecipitation.ShouldBeNull();
+                output.Currently.SunriseTime.Value.ToUnixTimeSeconds().ShouldBe(1609656638);
+                output.Currently.SunsetTime.Value.ToUnixTimeSeconds().ShouldBe(1609688798);
                 //output.Current.SunriseTime.ShouldBe(((int)1609656638).ToDateTimeOffset());
-                output.Current.SunriseTime.ShouldBe(new DateTime(2021, 01, 03, 6, 50, 38, DateTimeKind.Utc)); ;
-                output.Current.SunsetTime.Value.ShouldBeGreaterThan(output.Current.SunriseTime.Value);
-                output.Current.Temperature.Daily.ShouldBe(4.14f);
-                output.Current.Temperature.DewPoint.ShouldBe(4.11f);
-                output.Current.ApparentTemperature.Daily.ShouldBe(1.8f);
-                output.Current.Temperature.Humidity.ShouldBe(100);
-                output.Current.Temperature.Pressure.ShouldBe(1010);
+                output.Currently.SunriseTime.ShouldBe(new DateTime(2021, 01, 03, 6, 50, 38, DateTimeKind.Utc)); ;
+                output.Currently.SunsetTime.Value.ShouldBeGreaterThan(output.Currently.SunriseTime.Value);
+                output.Currently.Temperature.Daily.ShouldBe(4.14f);
+                output.Currently.Temperature.DewPoint.ShouldBe(4.11f);
+                output.Currently.ApparentTemperature.Daily.ShouldBe(1.8f);
+                output.Currently.Temperature.Humidity.ShouldBe(100);
+                output.Currently.Temperature.Pressure.ShouldBe(1010);
 
                 output.Hourly.Count.ShouldBe(48);
                 output.Hourly[0].Visibility.ShouldBe(10000);
@@ -158,6 +155,7 @@ namespace OpenWeather.Test {
                 output.Daily.Count.ShouldBe(8);
                 output.Daily[0].Visibility.ShouldBeNull();
                 output.Daily[0].Rain.ShouldBe(0.58f);
+                output.Daily[0].Snow.ShouldBe(0.99f);
                 output.Daily[0].ProbOfPrecipitation.ShouldBe(0.6f);
                 output.Daily[0].UVIndex.ShouldBe(0.94f);
                 output.Daily[0].Temperature.Daily.ShouldBe(9.5f);

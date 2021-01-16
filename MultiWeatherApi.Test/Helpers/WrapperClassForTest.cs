@@ -2,7 +2,7 @@
 using MultiWeatherApi;
 using Newtonsoft.Json;
 
-namespace GenericApi.Test {
+namespace Helpers {
 
     /// <summary>
     ///     Just a wrapper to access protected methods

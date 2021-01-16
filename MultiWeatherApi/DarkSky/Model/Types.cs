@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiWeatherApi.Model;
 
 namespace MultiWeatherApi.DarkSky.Model {
 
@@ -22,7 +23,7 @@ namespace MultiWeatherApi.DarkSky.Model {
         ///     Visibility: Miles
         /// </para>
         /// </summary>
-        US,
+        US = Unit.Imperial,
 
         /// <summary>
         ///     SI units of measurement.
@@ -39,7 +40,7 @@ namespace MultiWeatherApi.DarkSky.Model {
         ///     Visibility: km
         /// </para>
         /// </summary>
-        SI,
+        SI = Unit.SI,
 
         /// <summary>
         /// Canadian units of measurement. The same as SI, but with 
@@ -99,7 +100,7 @@ namespace MultiWeatherApi.DarkSky.Model {
         /// <summary>
         ///     Automatically choose units of measurement based on geographic location.
         /// </summary>
-        Auto
+        Auto = Unit.Auto
     }
 
     /// <summary>

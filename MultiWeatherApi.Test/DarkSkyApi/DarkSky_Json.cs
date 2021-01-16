@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
-using GenericApi.Test;
+using Helpers;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi.DarkSky.Model;
-using MultiWeatherApi.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Shouldly;
@@ -42,22 +40,19 @@ namespace DarkSky.Test {
 
             using (var jsonStream = File.OpenRead(filename)) {
                 Forecast output = client.ParseJsonFromStream_Wrapper<Forecast>(jsonStream);
-                throw new NotImplementedException();
-                //output.Coordinates.Latitude.ShouldBe(44.47);
-                //output.Coordinates.Longitude.ShouldBe(11.43);
-                //output.TimeZone.ShouldBe("Europe/Rome");
-                //output.TimeZoneOffset.ShouldBe(3600);
-
-                //output.Current.ShouldNotBeNull();
-                //output.Current.Time.ToUnixTimeSeconds().ShouldBe(1609711216L);
-                //output.Current.Wind.Speed.ShouldBe(1.5f);
-                //output.Current.Wind.Bearing.ShouldBe(260);
-                //output.Current.Visibility.ShouldBe(10000);
-                //output.Current.Rain.ShouldBe(0.24f);
-                //output.Current.ProbOfPrecipitation.ShouldBeNull();
-                //output.Current.SunriseTime.Value.ToUnixTimeSeconds().ShouldBe(1609656638);
-                //output.Current.SunsetTime.Value.ToUnixTimeSeconds().ShouldBe(1609688798);
-                ////output.Current.SunriseTime.ShouldBe(((int)1609656638).ToDateTimeOffset());
+                output.Coordinates.Latitude.ShouldBe(44.482732);
+                output.Coordinates.Longitude.ShouldBe(11.352134);
+                output.TimeZone.ShouldBe("Europe/Rome");
+                output.TimeZoneOffset.ShouldBe(1.0f);
+                output.Currently.ShouldNotBeNull();
+                output.Currently.Time.ToUnixTimeSeconds().ShouldBe(1609611060);
+                output.Currently.Wind.Speed.ShouldBe(3.27f);
+                output.Currently.Wind.Bearing.ShouldBe(96);
+                output.Currently.Visibility.ShouldBe(16.093f);
+                //output.Currently.PrecipitationIntensity.ShouldBe(0.24f);
+                //output.Currently.SunriseTime.Value.ToUnixTimeSeconds().ShouldBe(1609656638);
+                //output.Currently.SunsetTime.Value.ToUnixTimeSeconds().ShouldBe(1609688798);
+                //output.Current.SunriseTime.ShouldBe(((int)1609656638).ToDateTimeOffset());
                 //output.Current.SunriseTime.ShouldBe(new DateTime(2021, 01, 03, 6, 50, 38, DateTimeKind.Utc)); ;
                 //output.Current.SunsetTime.Value.ShouldBeGreaterThan(output.Current.SunriseTime.Value);
                 //output.Current.Temperature.Daily.ShouldBe(4.14f);

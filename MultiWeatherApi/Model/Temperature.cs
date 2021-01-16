@@ -25,15 +25,11 @@ namespace MultiWeatherApi.Model {
         [JsonProperty("night")]
         public float? Night { get; set; }
 
-        /// <summary>
-        ///     Min temperature of the day
-        /// </summary>
+        /// <summary>Min temperature of the day</summary>
         [JsonProperty("min")]
         public float? Min { get; set; }
 
-        /// <summary>
-        ///     Max temperature of the day. 
-        /// </summary>
+        /// <summary>Max temperature of the day.</summary>
         [JsonProperty("max")]
         public float? Max { get; set; }
 

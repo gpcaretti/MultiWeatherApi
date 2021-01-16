@@ -14,44 +14,17 @@ namespace MultiWeatherApi.DarkSky.Model {
         private Temperature _apparentTemperature = new Temperature();
         private Wind _wind = new Wind();
 
-        /// <summary>Time of this data point (unix, UTC)</summary>
-        [JsonProperty("time")]
-        public int UnixTime { get; set; }
-
-        /// <summary>Time of this data point (unix, UTC)</summary>
-        [JsonProperty("time_as_offset")]
-        public DateTimeOffset Time {
-            get => UnixTime.ToDateTimeOffset();
-            set => UnixTime = value.ToUnixTime();
-        }
-
-        /// <summary>
-        ///     a human-readable summary of this data point.
-        /// </summary>
+        /// <summary>A human-readable summary of this data point.</summary>
         [JsonProperty("summary")]
         public string Summary { get; set; }
 
-        /// <summary>
-        ///     machine-readable text that can be used to select an icon to display.
-        /// </summary>
+        /// <summary>Icon code</summary>
         [JsonProperty("icon")]
         public string Icon { get; set; }
 
-        /// <summary>Various temperatures of this time frame</summary>
-        [JsonProperty("temperatures")]
-        public Temperature Temperature {
-            get => _temperature;
-            set => _temperature = value;
-        }
-
-        /// <summary>
-        ///     Various apparent temperatures of this time frame
-        /// </summary>
-        [JsonProperty("apparent_temperatures")]
-        public Temperature ApparentTemperature {
-            get => _apparentTemperature;
-            set => _apparentTemperature = value;
-        }
+        /// <summary>the average visibility (km/miles). Optional</summary>
+        [JsonProperty("visibility")]
+        public float? Visibility { get; set; }
 
         /// <summary>the wind features</summary>
         public Wind Wind {
@@ -59,36 +32,67 @@ namespace MultiWeatherApi.DarkSky.Model {
             set => _wind = value;
         }
 
-        /// <summary>
-        ///     the percentage of cloud cover (from 0 to 1).
-        /// </summary>
-        [JsonProperty("cloudCover")]
-        public float CloudCover { get; set; }
+        /// <summary>Various real temperatures of this time frame</summary>
+        [JsonProperty("temperatures")]
+        public Temperature Temperature {
+            get => _temperature;
+            set => _temperature = value;
+        }
 
-        /// <summary>UV index</summary>
+        /// <summary>Various apparent temperatures of this time frame</summary>
+        [JsonProperty("apparent_temperatures")]
+        public Temperature ApparentTemperature {
+            get => _apparentTemperature;
+            set => _apparentTemperature = value;
+        }
+
+        /// <summary>Time of this data point (unix, UTC). See also <see cref="Time"/></summary>
+        [JsonProperty("time")]
+        public int UnixTime { get; set; }
+
+        /// <summary>Sunrise time (unix, UTC). See also <see cref="SunriseTime"/></summary>
+        [JsonProperty("sunriseTime")]
+        public int? SunriseUnixTime { get; set; }
+
+        /// <summary>Sunset time (unix, UTC). See also <see cref="SunsetTime"/></summary>
+        [JsonProperty("sunsetTime")]
+        public int? SunsetUnixTime { get; set; }
+
+        /// <summary>Time of this data point (UTC). See also <see cref="UnixTime"/></summary>
+        [JsonProperty("dt_as_offset")]
+        public DateTimeOffset Time {
+            get => UnixTime.ToDateTimeOffset();
+            set => UnixTime = value.ToUnixTime();
+        }
+
+        /// <summary>Sunrise time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <remarks>Null for hourly details</remarks>
+        public DateTimeOffset? SunriseTime {
+            get => (DateTimeOffset?)(SunriseUnixTime?.ToDateTimeOffset());
+            set => SunriseUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
+        }
+
+        /// <summary>Sunset time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <remarks>Null for hourly details</remarks>
+        public DateTimeOffset? SunsetTime {
+            get => (DateTimeOffset?)(SunsetUnixTime?.ToDateTimeOffset());
+            set => SunsetUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
+        }
+
+        /// <summary>UV index (optional)</summary>
         [JsonProperty("uvIndex")]
-        public int UVIndex { get; set; }
+        public int? UVIndex { get; set; }
 
+        /// <summary>UV index time (optional). Available only on daily</summary>
         [JsonProperty("uvIndexTime")]
         public int? UVIndexTime { get; set; }
 
-        /// <summary>
-        ///     the average visibility (capped at 10 miles).
-        /// </summary>
-        [JsonProperty("visibility")]
-        public float Visibility { get; set; }
+        /// <summary>the percentage of cloud cover (from 0 to 100).</summary>
+        public int Cloudness { get; set; }
 
-        /// <summary>
-        ///     the columnar density of total atmospheric ozone, in Dobson units.
-        /// </summary>
+        /// <summary>the columnar density of total atmospheric ozone, in Dobson units.</summary>
         [JsonProperty("ozone")]
         public float Ozone { get; set; }
-
-        [JsonProperty("sunriseTime")]
-        public int? SunriseTime { get; set; }
-
-        [JsonProperty("sunsetTime")]
-        public int? SunsetTime { get; set; }
 
         [JsonProperty("moonPhase")]
         public float? MoonPhase { get; set; }
@@ -97,13 +101,13 @@ namespace MultiWeatherApi.DarkSky.Model {
         ///     the average expected precipitation assuming any precipitation occurs.
         /// </summary>
         [JsonProperty("precipIntensity")]
-        public float PrecipitationIntensity { get; set; }
+        public float? PrecipitationIntensity { get; set; }
 
         /// <summary>
         ///     the probability of precipitation (from 0 to 1).
         /// </summary>
         [JsonProperty("precipProbability")]
-        public float PrecipitationProbability { get; set; }
+        public float? PrecipitationProbability { get; set; }
 
         /// <summary>
         ///     the type of precipitation (rain, sleet, or snow).
@@ -208,6 +212,13 @@ namespace MultiWeatherApi.DarkSky.Model {
         internal float Pressure {
             //get => _temperature.Pressure.GetValueOrDefault();
             set => _temperature.Pressure = value;
+        }
+
+        /// <summary>the percentage of cloud cover (from 0 to 1).</summary>
+        [JsonProperty("cloudCover")]
+        internal float CloudCover {
+            // get => (float)(Cloudness / 100.0f); 
+            set => Cloudness = (int)Math.Round(value * 100.0f, 0);
         }
 
         #endregion

@@ -17,8 +17,7 @@ namespace MultiWeatherApi.Model {
         [JsonProperty("deg")]
         public int Bearing { get; set; }
 
-        /// <summary>the wind gust speed.</summary>
-        [JsonProperty("speed")]
+        /// <summary>the wind gust speed</summary>
         public float? GustSpeed { get; set; }
 
         /// <summary>Time of wind gust (unix, UTC)</summary>

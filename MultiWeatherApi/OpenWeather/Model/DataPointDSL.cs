@@ -16,44 +16,21 @@ namespace MultiWeatherApi.OpenWeather.Model {
         private Temperature _apparentTemperature = new Temperature();
         private Wind _wind = new Wind();
 
-        /// <summary>Time of this data point (unix, UTC)</summary>
-        [JsonProperty("dt")]
-        public int UnixTime { get; set; }
+        /// <summary>A human-readable summary of the weather conditions of this data point</summary>
+        public string Summary => WeatherInfo?[0]?.Summary;
 
-        /// <summary>Time of this data point (unix, UTC)</summary>
-        [JsonProperty("dt_as_offset")]
-        public DateTimeOffset Time {
-            get => UnixTime.ToDateTimeOffset();
-            set => UnixTime = value.ToUnixTime();
-        }
+        /// <summary>A human-readable full description of the weather conditions</summary>
+        public string Description => WeatherInfo?[0]?.Description;
 
-        /// <summary>the time of this data point (unix, UTC)</summary>
-        /// <remarks>Null for hourly details</remarks>
-        public DateTimeOffset? SunriseTime {
-            get => (DateTimeOffset?)(SunriseUnixTime?.ToDateTimeOffset());
-            set => SunriseUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
-        }
+        /// <summary>Icon code</summary>
+        public string Icon => WeatherInfo?[0]?.Icon;
 
-        /// <summary>the time of this data point (unix, UTC)</summary>
-        /// <remarks>Null for hourly details</remarks>
-        public DateTimeOffset? SunsetTime {
-            get => (DateTimeOffset?)(SunsetUnixTime?.ToDateTimeOffset());
-            set => SunsetUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
-        }
+        /// <summary>Icon URL, if available</summary>
+        public string IconUrl => WeatherInfo?[0]?.IconUrl;
 
-        /// <summary>Real temperatures</summary>
-        [JsonProperty("temp"), JsonConverter(typeof(MyTemperatureConverter))]
-        public Temperature Temperature {
-            get => _temperature;
-            set => _temperature = value;
-        }
-
-        /// <summary>Apparent temperatures</summary>
-        [JsonProperty("feels_like"), JsonConverter(typeof(MyTemperatureConverter))]
-        public Temperature ApparentTemperature {
-            get => _apparentTemperature;
-            set => _apparentTemperature = value;
-        }
+        /// <summary>the average visibility (default meters)</summary>
+        [JsonProperty("visibility")]
+        public int? Visibility { get; set; }
 
         /// <summary>the wind features</summary>
         public Wind Wind {
@@ -61,8 +38,66 @@ namespace MultiWeatherApi.OpenWeather.Model {
             set => _wind = value;
         }
 
-        /// <summary>Rain volume (where available)</summary>
-        [JsonProperty("rain"), JsonConverter(typeof(MyRainConverter))]
+        /// <summary>Various real temperatures of this time frame</summary>
+        [JsonProperty("temp"), JsonConverter(typeof(MyTemperatureConverter))]
+        public Temperature Temperature {
+            get => _temperature;
+            set => _temperature = value;
+        }
+
+        /// <summary>Various apparent temperatures of this time frame</summary>
+        [JsonProperty("feels_like"), JsonConverter(typeof(MyTemperatureConverter))]
+        public Temperature ApparentTemperature {
+            get => _apparentTemperature;
+            set => _apparentTemperature = value;
+        }
+
+        /// <summary>Time of this data point (unix, UTC). See also <see cref="Time"/></summary>
+        [JsonProperty("dt")]
+        public int UnixTime { get; set; }
+
+        /// <summary>Sunrise time (unix, UTC). See also <see cref="SunriseTime"/></summary>
+        [JsonProperty("sunrise")]
+        public int? SunriseUnixTime { get; set; }
+
+        /// <summary>Sunset time (unix, UTC). See also <see cref="SunsetTime"/></summary>
+        [JsonProperty("sunset")]
+        public int? SunsetUnixTime { get; set; }
+        /// <summary>Time of this data point (UTC). See also <see cref="UnixTime"/></summary>
+        [JsonProperty("dt_as_offset")]
+        public DateTimeOffset Time {
+            get => UnixTime.ToDateTimeOffset();
+            set => UnixTime = value.ToUnixTime();
+        }
+
+        /// <summary>Sunrise time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <remarks>Null for hourly details</remarks>
+        public DateTimeOffset? SunriseTime {
+            get => (DateTimeOffset?)(SunriseUnixTime?.ToDateTimeOffset());
+            set => SunriseUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
+        }
+
+        /// <summary>Sunset time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <remarks>Null for hourly details</remarks>
+        public DateTimeOffset? SunsetTime {
+            get => (DateTimeOffset?)(SunsetUnixTime?.ToDateTimeOffset());
+            set => SunsetUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
+        }
+
+        /// <summary>UV index</summary>
+        [JsonProperty("uvi")]
+        public float UVIndex { get; set; }
+
+        /// <summary>the percentage of cloud cover (from 0 to 100).</summary>
+        [JsonProperty("clouds")]
+        public int Cloudness { get; set; }
+
+        /// <summary>Snow volume (where available). Default in mm.</summary>
+        [JsonProperty("snow"), JsonConverter(typeof(MySnowRainConverter))]
+        public float? Snow { get; set; }
+
+        /// <summary>Rain volume (where available). Default in mm.</summary>
+        [JsonProperty("rain"), JsonConverter(typeof(MySnowRainConverter))]
         public float? Rain { get; set; }
 
         /// <summary>Probability of precipitation (0..1)</summary>
@@ -72,23 +107,8 @@ namespace MultiWeatherApi.OpenWeather.Model {
         [JsonProperty("weather")]
         public IList<WeatherInfo> WeatherInfo { get; set; }
 
-        /// <summary>UV index</summary>
-        [JsonProperty("uvi")]
-        public float UVIndex { get; set; }
+        #region Internals
 
-        [JsonProperty("clouds")]
-        public int Clouds { get; set; }
-
-        [JsonProperty("visibility")]
-        public int? Visibility { get; set; }
-
-        #region Internal
-
-        [JsonProperty("sunrise")]
-        internal int? SunriseUnixTime { get; set; }
-
-        [JsonProperty("sunset")]
-        internal int? SunsetUnixTime { get; set; }
 
         [JsonProperty("humidity")]
         internal int? Humidity {

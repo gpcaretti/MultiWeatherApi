@@ -56,13 +56,16 @@ namespace MultiWeatherApi.OpenWeather.Model {
         [JsonProperty("wind")]
         public Wind Wind { get; set; } = new Wind();
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public string Summary => WeatherInfo?[0]?.Summary;
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public string Description => WeatherInfo?[0]?.Description;
 
-        //[JsonIgnore]
+        [JsonIgnore]
+        public string Icon => WeatherInfo?[0]?.Icon;
+
+        [JsonIgnore]
         public string IconUrl => WeatherInfo?[0]?.IconUrl;
 
         #region Internals

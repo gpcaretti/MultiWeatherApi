@@ -5,7 +5,8 @@ using System.Runtime.Serialization;
 namespace MultiWeatherApi {
 
     /// <summary>
-    ///     TODO
+    ///     A general exception return vy the API call if any error occurr. 
+    ///     The <see cref="Code"/> attributes help in distinguish the error type
     /// </summary>
     [Serializable]
     public class WeatherException : Exception {

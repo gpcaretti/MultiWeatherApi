@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi;
 using MultiWeatherApi.DarkSky;
+using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
 using Shouldly;
 using Xunit;
@@ -55,6 +57,65 @@ namespace GenericApi.Test {
             Should.ThrowAsync<InvalidOperationException>(async () => await owClient.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
         }
 
+        [Fact]
+        public async void GetCurrentWeather_DarkSky() {
+            var dsClient = CreateService<DarkSkyService>(_darkSkyApiKey);
+            var output = await dsClient.GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // asserts
+            Check_GetCurrentWeather_Output(output);
+        }
+
+        [Fact]
+        public async void GetCurrentWeather_OpenW() {
+            //var owClient = CreateService<OpenWeatherService>(_openWeatherApiKey);
+            var owClient = CreateService2(WeatherServiceInfo.OpenWeather, _openWeatherApiKey);
+            var output = await owClient.GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // asserts
+            Check_GetCurrentWeather_Output(output);
+        }
+
+        [Fact]
+        public async void GetForecast_DarkSky() {
+            var dsClient = CreateService<DarkSkyService>(_darkSkyApiKey);
+            var output = await dsClient.GetForecast(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // asserts
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void GetForecast_OpenW() {
+            var owClient = CreateService<OpenWeatherService>(_openWeatherApiKey);
+            var output = await owClient.GetForecast(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // asserts
+            throw new NotImplementedException();
+        }
+
+        private void Check_GetCurrentWeather_Output(Weather output) {
+            output.TimeZone.ShouldNotBeNullOrEmpty();
+            output.TimeZoneOffset.ShouldNotBe(0.0f);
+            output.UnixTime.ShouldBeGreaterThan(DateTime.Today.Date.ToUnixTime());
+
+            output.Summary.ShouldNotBeNullOrEmpty();
+            output.Description.ShouldNotBeNullOrEmpty();
+            output.Icon.ShouldNotBeNullOrEmpty();
+            // TODO output.IconUrl.ShouldNotBeNullOrEmpty();
+            output.Wind.ShouldNotBeNull();
+            output.Coordinates.ShouldNotBeNull();
+            output.Coordinates.Latitude.ShouldBeGreaterThan(0.0);
+            output.Coordinates.Longitude.ShouldBeGreaterThan(0.0);
+            output.Temperature.ShouldNotBeNull();
+            output.Temperature.Daily.ShouldNotBeNull();
+            output.Temperature.Humidity.ShouldNotBeNull();
+            output.Temperature.Pressure.ShouldNotBeNull();
+            output.ApparentTemperature.ShouldNotBeNull();
+            output.Visibility.ShouldBeGreaterThan(0);
+            output.SunriseUnixTime.ShouldNotBeNull();
+            output.SunsetUnixTime.ShouldNotBeNull();
+            output.SunriseUnixTime.Value.ShouldBeGreaterThan(DateTime.Today.Date.ToUnixTime());
+            output.SunsetUnixTime.Value.ShouldBeGreaterThan(output.SunriseUnixTime.Value);
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -62,9 +123,12 @@ namespace GenericApi.Test {
         /// <param name="apiKey"></param>
         /// <returns></returns>
         private IWeatherService CreateService<T>(string apiKey) where T : WeatherServiceBase {
-            return new WeatherFactory().Create<T>(apiKey);
+            return null;// new WeatherFactory().Create<T>(apiKey);
         }
 
+        private IWeatherService CreateService2(WeatherServiceInfo wsInfo, string apiKey) {
+            return new WeatherFactory().Create(wsInfo.Id, (object)apiKey);
+        }
 
     }
 

@@ -22,21 +22,24 @@ namespace MultiWeatherApi.DarkSky {
         /// </summary>
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
-        /// <param name="unit">Default is <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetCurrentWeather(double latitude, double longitude, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
 
         /// <summary>
-        ///    Returns the current weather conditions, included an hour-by-hour forecast for the next 48 hours, the daily forecast for the next 7 days and possible alerts
+        ///    Returns the current weather conditions, included
+        ///     * an hour-by-hour forecast for the next 48 hours, 
+        ///     * the daily forecast for the next 7 days and 
+        ///     * possible alerts
         /// </summary>
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
-        /// <param name="unit">Default is <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetForecast(double latitude, double longitude, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
 
         /// <summary>
@@ -46,10 +49,10 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
         /// <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-        /// <param name="unit">Default is <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default is <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default is <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetWeather(double latitude, double longitude, IList<Extend> extends, IList<Exclude> excludes, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
 
         /// <summary>
@@ -65,10 +68,10 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="latitude">The latitude to retrieve data for.</param>
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="date">Requested date</param>
-        /// <param name="unit">Default <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetWeatherByDate(double latitude, double longitude, DateTimeOffset date, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
 
         /// <summary>
@@ -85,10 +88,10 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="longitude">The longitude to retrieve data for.</param>
         /// <param name="date">Requested date</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
-        /// <param name="unit">Default <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetWeatherByDate(double latitude, double longitude, DateTime date, IList<Exclude> excludes, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
 
         /// <summary>
@@ -106,10 +109,10 @@ namespace MultiWeatherApi.DarkSky {
         /// <param name="date">Requested date</param>
         /// <param name="excludes">Any blocks that should be excluded from the request.</param>
         /// <param name="extends">The type of forecast to retrieve extended results for. Currently limited to hourly blocks.</param>
-        /// <param name="unit">Default <see cref="Model.Unit.Auto"/></param>
+        /// <param name="unit">Default <see cref="Model.DSUnit.Auto"/></param>
         /// <param name="language">Default <see cref="Language.English"/></param>
         /// <returns>A <see cref="Task"/> for a <see cref="Forecast"/> with the requested data, or null if the data was corrupted.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">Thrown when the service returned anything other than a 200 (Status OK) code.</exception>
+        /// <exception cref="WeatherException">Thrown if the response did not have a status code indicating success.</exception>
         Task<Forecast> GetWeatherByDate(double latitude, double longitude, DateTimeOffset date, IList<Extend> extends, IList<Exclude> excludes, Model.DSUnit unit = Model.DSUnit.Auto, Language language = Language.English);
     }
 }

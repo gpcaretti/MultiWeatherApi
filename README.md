@@ -1,4 +1,3 @@
-  "DarkSkyApiKey": "c5ab83de14d57843c3d9be08ee907000"
 # MultiWeather API
 
 An unofficial C# .NET Standard 2.0 library to unify the access to multiple weather services.[CR]

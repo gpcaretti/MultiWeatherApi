@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
+using OWModel = MultiWeatherApi.OpenWeather.Model;
+using Nelibur.ObjectMapper;
 
 namespace MultiWeatherApi {
+
     internal class OpenWeatherWrapper : IWeatherService {
 
+        public static readonly Guid _uniqueGuid = new Guid("441096B2-972C-4403-ADC9-A240E44350D6");
+
         private IOpenWeatherService _service;
+
+        /// <summary>Unique guid Id of this service</summary>
+        public Guid Id { get => _uniqueGuid; }
 
         /// <summary>Set the api key for the underneath weather service</summary>
         public string ApiKey { set => _service = new OpenWeatherService(value); }
@@ -24,16 +33,40 @@ namespace MultiWeatherApi {
             ApiKey = apiKey;
         }
 
-        public Task GetCurrentWeather(double alcatrazLatitude, double alcatrazLongitude) {
+        public async Task<Weather> GetCurrentWeather(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
+            var src = await _service.GetForecastDSL(latitude, longitude, (OWModel.OWUnit)unit, language);
+            var output = TinyMapper.Map<Weather>(src);
+
+            // === ALTERNATIVE using GetCurrentWeather
+            //var innerW = await _service.GetCurrentWeather(latitude, longitude, (OWUnit)unit, language);
+            //var output = TinyMapper.Map<Model.Weather>((object)innerW);
+            // ===
+
+            // === do some adaptation that TinyMapper does not do quickly
+
+            // Convert time offset from seconds to hours
+            if (src.TimeZoneOffset > 0) output.TimeZoneOffset = (float)Math.Round(src.TimeZoneOffset / 3600.0f, 1);
+
+            // TODO Map this: output.Hourly = innerW.Hourly,
+
+            return output;
+        }
+
+        public async Task<WeatherGroup> GetForecast(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
+            OWModel.ForecastDSL src = await _service.GetForecastDSL(latitude, longitude, (OWModel.OWUnit)unit, language);
+
+            var output = new WeatherGroup(src.Daily?.Count ?? 8);
+            output = TinyMapper.Map<OWModel.ForecastDSL, WeatherGroup>(src, output);
+            foreach (var dataPoint in src.Daily) {
+                output.Add(TinyMapper.Map<Weather>(dataPoint));
+            }
+
+            return output;
+        }
+
+        public Task GetWeatherByDate(double latitude, double longitude, DateTime dateTime) {
             throw new NotImplementedException();
         }
 
-        public Task GetForecast(double alcatrazLatitude, double alcatrazLongitude) {
-            throw new NotImplementedException();
-        }
-
-        public Task GetWeatherByDate(double alcatrazLatitude, double alcatrazLongitude, DateTime dateTime) {
-            throw new NotImplementedException();
-        }
     }
 }

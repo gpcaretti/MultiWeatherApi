@@ -5,14 +5,16 @@ using Newtonsoft.Json.Linq;
 
 namespace MultiWeatherApi.OpenWeather.Helpers {
 
-    public class MyRainConverter : JsonConverter {
+    /// <summary>
+    ///     Manage snow/rain in the format of a float number of an object in the form {"1h": "float value"}
+    /// </summary>
+    public class MySnowRainConverter : JsonConverter {
 
         public override bool CanConvert(Type objectType) {
-            return true || objectType == typeof(Temperature);
+            return true || objectType == typeof(float);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            // create a temperature object and save the values on daily, min, etc. If the value is just a float, save it into Daily
             float? rain = null;
             JToken token = JToken.Load(reader);
             if (token.Type == JTokenType.Object) {

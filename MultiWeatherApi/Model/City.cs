@@ -1,8 +1,7 @@
 ﻿using System;
-using MultiWeatherApi.Model;
 using Newtonsoft.Json;
 
-namespace MultiWeatherApi.OpenWeather.Model {
+namespace MultiWeatherApi.Model {
 
     /// <summary>
     ///     Information about the city 

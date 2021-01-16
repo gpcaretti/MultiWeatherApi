@@ -127,17 +127,17 @@ namespace OpenWeather.Test {
             output.Coordinates.Longitude.ShouldBeGreaterThan(0.0);
             output.TimeZone.ShouldNotBeNullOrWhiteSpace();
             output.TimeZoneOffset.ShouldBeGreaterThan(0);
-            output.Current.ShouldNotBeNull();
-            output.Current.Time.Date.ShouldBe(DateTime.Today);
-            output.Current.SunriseTime.Value.Date.ShouldBe(DateTime.Today);
-            output.Current.SunriseTime.Value.ShouldBeGreaterThan(DateTime.Today);
-            output.Current.SunsetTime.Value.ShouldBeGreaterThan(output.Current.SunriseTime.Value);
-            output.Current.Time.ShouldBeGreaterThan(DateTime.Today);
-            output.Current.Temperature.Daily.ShouldNotBeNull();
-            output.Current.Temperature.Daily.ShouldNotBe(0.0f);
-            output.Current.Temperature.Pressure.ShouldNotBeNull();
-            output.Current.Temperature.Pressure.Value.ShouldBeGreaterThan(0);
-            output.Current.ApparentTemperature.Daily.ShouldNotBeNull();
+            output.Currently.ShouldNotBeNull();
+            output.Currently.Time.Date.ShouldBe(DateTime.Today);
+            output.Currently.SunriseTime.Value.Date.ShouldBe(DateTime.Today);
+            output.Currently.SunriseTime.Value.ShouldBeGreaterThan(DateTime.Today);
+            output.Currently.SunsetTime.Value.ShouldBeGreaterThan(output.Currently.SunriseTime.Value);
+            output.Currently.Time.ShouldBeGreaterThan(DateTime.Today);
+            output.Currently.Temperature.Daily.ShouldNotBeNull();
+            output.Currently.Temperature.Daily.ShouldNotBe(0.0f);
+            output.Currently.Temperature.Pressure.ShouldNotBeNull();
+            output.Currently.Temperature.Pressure.Value.ShouldBeGreaterThan(0);
+            output.Currently.ApparentTemperature.Daily.ShouldNotBeNull();
 
             output.Daily.Count.ShouldBeGreaterThan(0);
             output.Daily[0].Time.Date.ShouldBe(DateTime.Today);
@@ -151,10 +151,10 @@ namespace OpenWeather.Test {
             // assert
             outputImperial.Coordinates.Latitude.ShouldBe(output.Coordinates.Latitude);
             outputImperial.Coordinates.Longitude.ShouldBe(output.Coordinates.Longitude);
-            outputImperial.Current.Temperature.Daily.ShouldNotBeNull();
-            outputImperial.Current.Temperature.Daily.Value.ShouldBeGreaterThan(output.Current.Temperature.Daily.Value);
-            outputImperial.Current.Wind.Speed.ShouldNotBe(output.Current.Wind.Speed);
-            outputImperial.Current.Wind.Bearing.ShouldBe(output.Current.Wind.Bearing);
+            outputImperial.Currently.Temperature.Daily.ShouldNotBeNull();
+            outputImperial.Currently.Temperature.Daily.Value.ShouldBeGreaterThan(output.Currently.Temperature.Daily.Value);
+            outputImperial.Currently.Wind.Speed.ShouldNotBe(output.Currently.Wind.Speed);
+            outputImperial.Currently.Wind.Bearing.ShouldBe(output.Currently.Wind.Bearing);
         }
 
     }
