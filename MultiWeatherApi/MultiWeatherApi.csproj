@@ -4,16 +4,19 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Gianpiero Caretti</Authors>
     <Company>GP software engineering</Company>
-    <Description>API abstraction of OpenWeatherMap and DarkSky API</Description>
+    <Description>API abstraction for OpenWeatherMap and DarkSky API</Description>
     <PackageTags>Weather OpenWeatherMap DarkSky netstandard c#</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>GitHub</RepositoryType>
 		<ApplicationIcon>packageIcon.ico</ApplicationIcon>
 		<PackageIcon>packageIcon.png</PackageIcon>
-		<version>1.0.0-alpha3</version>
+		<version>1.0.0-pre1</version>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/gpcaretti/MultiWeatherApi</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/gpcaretti/MultiWeatherApi</PackageProjectUrl>
+		<Copyright>Copyright © GP software engineering</Copyright>
 	</PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

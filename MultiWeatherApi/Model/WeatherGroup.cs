@@ -16,7 +16,6 @@ namespace MultiWeatherApi.Model {
         public string TimeZone { get; set; }
 
         /// <summary>the time zone offset, in hours from GMT.</summary>
-        // TODO normalize the same unit for OpenWeather (seconds) and DarkSky (hours)
         public float TimeZoneOffset { get; set; }
 
         /// <summary>Any weather alerts related to this location.</summary>

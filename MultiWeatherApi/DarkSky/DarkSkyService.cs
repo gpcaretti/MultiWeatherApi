@@ -272,7 +272,7 @@ namespace MultiWeatherApi.DarkSky {
                         var output = ParseJsonFromStream<Forecast>(responseStream);
                         // patch a bit the output
                         if ((output.Daily?.Data?.Count ?? 0) > 0) {
-                            // if there are more info on the daily data, copy them on output.Currently
+                            // if there are more info on the daily data, copy it on output.Currently
                             var sameDay = output.Daily.Data.FirstOrDefault(d => 
                                 (d.SunriseTime != null) && 
                                 (d.SunriseTime.Value.Date.Equals(output.Currently.Time.Date)));

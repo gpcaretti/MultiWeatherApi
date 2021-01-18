@@ -8,6 +8,15 @@ namespace MultiWeatherApi.Model {
     /// </summary>
     [Serializable]
     public class GeoCoordinates {
+        /// <summary>Default contructor</summary>
+        public GeoCoordinates() { 
+        }
+
+        /// <summary>Contructor setting lat and lon</summary>
+        public GeoCoordinates(double latitude, double longitude) {
+            Latitude = latitude;
+            Longitude = longitude;
+        }
 
         /// <summary>Latidute</summary>
         [JsonProperty("lat")]

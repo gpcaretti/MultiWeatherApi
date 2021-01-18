@@ -38,18 +38,28 @@ namespace MultiWeatherApi {
         public async Task<WeatherGroup> GetForecast(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
             DSModel.Forecast src = await _service.GetForecast(latitude, longitude, (DSModel.DSUnit)unit, language);
 
-            var output = new WeatherGroup(src.Daily?.Data?.Count ?? 8);
+            var output = new WeatherGroup(src.Daily?.Data?.Count ?? 16);
             output = TinyMapper.Map<DSModel.Forecast, WeatherGroup>(src, output);
             foreach (var dataPoint in src.Daily.Data) {
-                output.Add(TinyMapper.Map<Weather>(dataPoint));
+                // convert datapoints patching/normalizing some values
+                var weatherOftheDay = TinyMapper.Map<Weather>(dataPoint);
+                if (string.IsNullOrEmpty(weatherOftheDay.TimeZone)) weatherOftheDay.TimeZone = output.TimeZone;
+                if (weatherOftheDay.TimeZoneOffset == 0.0f) weatherOftheDay.TimeZoneOffset = output.TimeZoneOffset;
+                if (weatherOftheDay.Coordinates == null) weatherOftheDay.Coordinates = output.Coordinates;
+                // normalize time unix utc
+                if (Math.Abs(output.TimeZoneOffset) > 0.4f) weatherOftheDay.UnixTime += (int)(3600 * output.TimeZoneOffset);
+
+                output.Add(weatherOftheDay);
             }
 
             return output;
         }
 
-        public Task GetWeatherByDate(double latitude, double longitude, DateTime dateTime) {
-            throw new NotImplementedException();
+        public async Task<Weather> GetWeatherByDate(double latitude, double longitude, DateTime dateTime, Unit unit = Unit.Auto, Language language = Language.English) {
+            DSModel.Forecast src = await _service.GetWeatherByDate(latitude, longitude, dateTime, (DSModel.DSUnit)unit, language);
+            var output = TinyMapper.Map<Weather>(src);
+            // TODO Map this: output.Hourly = innerW.Hourly,
+            return output;
         }
-
     }
 }

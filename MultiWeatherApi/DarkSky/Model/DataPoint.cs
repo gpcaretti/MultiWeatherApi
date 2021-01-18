@@ -46,7 +46,15 @@ namespace MultiWeatherApi.DarkSky.Model {
             set => _apparentTemperature = value;
         }
 
-        /// <summary>Time of this data point (unix, UTC). See also <see cref="Time"/></summary>
+        /// <summary>
+        ///     The UNIX time at which this data point begins. 
+        ///     * A 'minutely' data point is always aligned to the top of the minute, 
+        ///     * A 'hourly' data point objects is always aligned to the top of the hour, 
+        ///     * A 'daily' data point objects is always aligned to midnight of the day, 
+        ///     * A 'currently' data point object is always aligned to the point of time provided.
+        ///     All according to the local time zone of the word .    
+        /// Time of this data point (unix, UTC). See also <see cref="Time"/>
+        /// </summary>
         [JsonProperty("time")]
         public int UnixTime { get; set; }
 

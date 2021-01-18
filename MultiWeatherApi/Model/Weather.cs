@@ -31,8 +31,8 @@ namespace MultiWeatherApi.Model {
         public string IconUrl { get; set; }
 
         // TODO normalize the same unit for OpenWeather (meters/yards?) and DarkSky (km/miles)
-        /// <summary>the average visibility</summary>
-        public float Visibility { get; set; }
+        /// <summary>the average visibility. Can be null on daily data point</summary>
+        public float? Visibility { get; set; }
 
         /// <summary>the wind features</summary>
         public Wind Wind { get; set; }
@@ -51,10 +51,10 @@ namespace MultiWeatherApi.Model {
         /// <summary>Time of this data point (unix, UTC). See also <see cref="Time"/></summary>
         public int UnixTime { get; set; }
 
-        /// <summary>Sunrise time (unix, UTC). See also <see cref="SunriseTime"/></summary>
+        /// <summary>Sunrise time (unix local time). See also <see cref="SunriseTime"/></summary>
         public int? SunriseUnixTime { get; set; }
 
-        /// <summary>Sunset time (unix, UTC). See also <see cref="SunsetTime"/></summary>
+        /// <summary>Sunset time (unix local time). See also <see cref="SunsetTime"/></summary>
         public int? SunsetUnixTime { get; set; }
 
         /// <summary>Time of this data point (UTC). See also <see cref="UnixTime"/></summary>
@@ -63,14 +63,14 @@ namespace MultiWeatherApi.Model {
             set => UnixTime = value.ToUnixTime();
         }
 
-        /// <summary>Sunrise time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <summary>Sunrise local time. See also <see cref="SunsetUnixTime"/></summary>
         /// <remarks>Null for hourly details</remarks>
         public DateTimeOffset? SunriseTime {
             get => (DateTimeOffset?)(SunriseUnixTime?.ToDateTimeOffset());
             set => SunriseUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
         }
 
-        /// <summary>Sunset time (UTC). See also <see cref="SunsetUnixTime"/></summary>
+        /// <summary>Sunset local time. See also <see cref="SunsetUnixTime"/></summary>
         /// <remarks>Null for hourly details</remarks>
         public DateTimeOffset? SunsetTime {
             get => (DateTimeOffset?)(SunsetUnixTime?.ToDateTimeOffset());

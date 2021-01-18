@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MultiWeatherApi.Model;
@@ -181,7 +182,42 @@ namespace MultiWeatherApi.OpenWeather {
                     var v = await response.Content.ReadAsStringAsync();
 #endif                    
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                    return ParseJsonFromStream<ForecastDSL>(responseStream);
+                        var output = ParseJsonFromStream<ForecastDSL>(responseStream);
+                        // patch a bit the output
+                        if ((output.Daily?.Count ?? 0) > 0) {
+                            // if there are more info on the daily data, copy it on output.Currently
+                            var sameDay = output.Daily.FirstOrDefault(d =>
+                                (d.SunriseTime != null) &&
+                                (d.SunriseTime.Value.Date.Equals(output.Currently.Time.Date)));
+                            if (sameDay != null) {
+                                var currently = output.Currently;
+                                //if (string.IsNullOrEmpty(currently.Description)) currently.Description = sameDay.Description;
+                                //if (string.IsNullOrEmpty(currently.Summary)) currently.Summary = sameDay.Summary;
+                                //if (string.IsNullOrEmpty(currently.Icon)) currently.Icon = sameDay.Icon;
+
+                                if (!currently.Temperature.Daily.HasValue) currently.Temperature.Daily = sameDay.Temperature.Daily;
+                                if (!currently.Temperature.DewPoint.HasValue) currently.Temperature.DewPoint = sameDay.Temperature.DewPoint;
+                                if (!currently.Temperature.Evening.HasValue) currently.Temperature.Evening = sameDay.Temperature.Evening;
+                                if (!currently.Temperature.Max.HasValue) currently.Temperature.Max = sameDay.Temperature.Max;
+                                if (!currently.Temperature.Min.HasValue) currently.Temperature.Min = sameDay.Temperature.Min;
+                                if (!currently.Temperature.Morning.HasValue) currently.Temperature.Morning = sameDay.Temperature.Morning;
+                                if (!currently.Temperature.Night.HasValue) currently.Temperature.Night = sameDay.Temperature.Night;
+                                if (!currently.Temperature.Humidity.HasValue) currently.Temperature.Humidity = sameDay.Temperature.Humidity;
+                                if (!currently.Temperature.Pressure.HasValue) currently.Temperature.Pressure = sameDay.Temperature.Pressure;
+
+                                if (!currently.ApparentTemperature.Daily.HasValue) currently.ApparentTemperature.Daily = sameDay.ApparentTemperature.Daily;
+                                if (!currently.ApparentTemperature.DewPoint.HasValue) currently.ApparentTemperature.DewPoint = sameDay.ApparentTemperature.DewPoint;
+                                if (!currently.ApparentTemperature.Evening.HasValue) currently.ApparentTemperature.Evening = sameDay.ApparentTemperature.Evening;
+                                if (!currently.ApparentTemperature.Max.HasValue) currently.ApparentTemperature.Max = sameDay.ApparentTemperature.Max;
+                                if (!currently.ApparentTemperature.Min.HasValue) currently.ApparentTemperature.Min = sameDay.ApparentTemperature.Min;
+                                if (!currently.ApparentTemperature.Morning.HasValue) currently.ApparentTemperature.Morning = sameDay.ApparentTemperature.Morning;
+                                if (!currently.ApparentTemperature.Night.HasValue) currently.ApparentTemperature.Night = sameDay.ApparentTemperature.Night;
+                                if (!currently.ApparentTemperature.Humidity.HasValue) currently.ApparentTemperature.Humidity = sameDay.ApparentTemperature.Humidity;
+                                if (!currently.ApparentTemperature.Pressure.HasValue) currently.ApparentTemperature.Pressure = sameDay.ApparentTemperature.Pressure;
+                            }
+                        }
+
+                        return output;
                     }
                 }
                 catch (WeatherException) {
