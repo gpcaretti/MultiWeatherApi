@@ -38,7 +38,7 @@ namespace MultiWeatherApi.Model {
         public Wind Wind { get; set; }
 
         /// <summary>Any weather alerts related to this location.</summary>
-        public IList<Alert> Alerts { get; set; }
+        public List<Alert> Alerts { get; set; }
 
         /// <summary>Various real temperatures of this time frame</summary>
         public Temperature Temperature { get; set; }
@@ -77,11 +77,12 @@ namespace MultiWeatherApi.Model {
             set => SunsetUnixTime = value.HasValue ? value.Value.ToUnixTime() : (int?)null;
         }
 
-        ///// <summary>
-        /////     the hour-by-hour conditions for the next two days.
-        ///// </summary>
-        //[JsonProperty("hourly")]
-        //public ForecastDetails Hourly { get; set; }
+        /// <summary>
+        ///     Hour-by-hour conditions:
+        ///     * Current condtions: for the next two days.
+        ///     * Daily: is null
+        /// </summary>
+        public WeatherGroup Hourly { get; set; }
 
     }
 }

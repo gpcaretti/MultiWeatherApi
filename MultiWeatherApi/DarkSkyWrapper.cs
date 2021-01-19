@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MultiWeatherApi.DarkSky;
 using MultiWeatherApi.Model;
@@ -31,7 +32,13 @@ namespace MultiWeatherApi {
         public async Task<Weather> GetCurrentWeather(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
             DSModel.Forecast src = await _service.GetCurrentWeather(latitude, longitude, (DSModel.DSUnit)unit, language);
             var output = TinyMapper.Map<Weather>(src);
-            // TODO Map this: output.Hourly = innerW.Hourly,
+            // now maps the hours
+            if ((src.Hourly?.Data?.Count ?? 0) > 0) {
+                var hourly = TinyMapper.Map<WeatherGroup>(src);
+                hourly.AddRange(TinyMapper.Map<List<Weather>>(src.Hourly.Data));
+                output.Hourly = hourly;
+            }
+
             return output;
         }
 
@@ -39,7 +46,7 @@ namespace MultiWeatherApi {
             DSModel.Forecast src = await _service.GetForecast(latitude, longitude, (DSModel.DSUnit)unit, language);
 
             var output = new WeatherGroup(src.Daily?.Data?.Count ?? 16);
-            output = TinyMapper.Map<DSModel.Forecast, WeatherGroup>(src, output);
+            TinyMapper.Map<DSModel.Forecast, WeatherGroup>(src, output);
             foreach (var dataPoint in src.Daily.Data) {
                 // convert datapoints patching/normalizing some values
                 var weatherOftheDay = TinyMapper.Map<Weather>(dataPoint);

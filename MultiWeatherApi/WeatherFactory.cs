@@ -16,7 +16,7 @@ namespace MultiWeatherApi {
 
         static WeatherFactory() {
             // init the tinyMapper maps
-            Mappering.Maps();
+            TinyMappers.Maps();
         }
 
         /// <summary>

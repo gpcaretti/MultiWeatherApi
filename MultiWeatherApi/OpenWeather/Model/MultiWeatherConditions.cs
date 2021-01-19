@@ -27,6 +27,6 @@ namespace MultiWeatherApi.OpenWeather.Model {
         public int Cnt { get; set; }
 
         [JsonProperty("list")]
-        public IList<WeatherConditions> Items { get; set; }
+        public List<WeatherConditions> Items { get; set; }
     }
 }

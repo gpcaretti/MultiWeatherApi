@@ -32,7 +32,7 @@ namespace MultiWeatherApi.OpenWeather.Model {
         public GeoCoordinates Coordinates { get; set; }
 
         [JsonProperty("weather")]
-        public IList<WeatherInfo> WeatherInfo { get; set; }
+        public List<WeatherInfo> WeatherInfo { get; set; }
 
         /// <summary>
         ///     Various temperatures of this time frame

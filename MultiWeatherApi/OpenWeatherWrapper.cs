@@ -4,6 +4,8 @@ using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
 using OWModel = MultiWeatherApi.OpenWeather.Model;
 using Nelibur.ObjectMapper;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace MultiWeatherApi {
 
@@ -29,14 +31,20 @@ namespace MultiWeatherApi {
         }
 
         public async Task<Weather> GetCurrentWeather(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
-            var src = await _service.GetForecastDSL(latitude, longitude, (OWModel.OWUnit)unit, language);
+            OWModel.ForecastDSL src = await _service.GetForecastDSL(latitude, longitude, (OWModel.OWUnit)unit, language);
             var output = TinyMapper.Map<Weather>(src);
 
             // === do some adaptation that TinyMapper does not do quickly
             // Convert time offset from seconds to hours
             if (src.TimeZoneOffset != 0) output.TimeZoneOffset = (float)Math.Round(src.TimeZoneOffset / 3600.0f, 1);
 
-            // TODO Map this: output.Hourly = innerW.Hourly,
+            // now maps the hours
+            if ((src.Hourly?.Count ?? 0) > 0) {
+                var hourly = TinyMapper.Map<WeatherGroup>(src);
+                hourly.TimeZoneOffset = output.TimeZoneOffset;
+                hourly.AddRange(TinyMapper.Map<List<Weather>>(src.Hourly));
+                output.Hourly = hourly;
+            }
 
             // === ALTERNATIVE using GetCurrentWeather
             //var innerW = await _service.GetCurrentWeather(latitude, longitude, (OWUnit)unit, language);
@@ -53,21 +61,21 @@ namespace MultiWeatherApi {
             //var output_zero = await _service.GetForecastDSL(51.53027816900633, 0.08310560054000066, (OWModel.OWUnit)unit, Language.Italian);
             //var output_piu = await _service.GetForecastDSL(44.482732, 11.352134, (OWModel.OWUnit)unit, Language.Italian);
 
-            var output = new WeatherGroup(src.Daily?.Count ?? 16);
+            var output = new WeatherGroup(src.Daily?.Count ?? 0);
             output = TinyMapper.Map<OWModel.ForecastDSL, WeatherGroup>(src, output);
             // do some normalization (convert time offset from seconds to hours)
             if (src.TimeZoneOffset != 0) output.TimeZoneOffset = (float)Math.Round(output.TimeZoneOffset / 3600.0f, 1);
 
-            foreach (var dataPoint in src.Daily) {
-                // convert datapoints patching/normalizing some values
-                var weatherOftheDay = TinyMapper.Map<Weather>(dataPoint);
-                if (string.IsNullOrEmpty(weatherOftheDay.TimeZone)) weatherOftheDay.TimeZone = output.TimeZone;
-                if (weatherOftheDay.TimeZoneOffset == 0.0f) weatherOftheDay.TimeZoneOffset = output.TimeZoneOffset;
-                if (weatherOftheDay.Coordinates == null) weatherOftheDay.Coordinates = output.Coordinates;
-                // normalize time unix utc
-                if (src.TimeZoneOffset != 0) weatherOftheDay.UnixTime += src.TimeZoneOffset;
-
-                output.Add(weatherOftheDay);
+            // now add the days
+            if ((src.Daily?.Count ?? 0) > 0) {
+                output.AddRange(TinyMapper.Map<List<Weather>>(src.Daily));
+                foreach (var daily in output) {
+                    if (string.IsNullOrEmpty(daily.TimeZone)) daily.TimeZone = output.TimeZone;
+                    if (daily.TimeZoneOffset == 0.0f) daily.TimeZoneOffset = output.TimeZoneOffset;
+                    if (daily.Coordinates == null) daily.Coordinates = output.Coordinates;
+                    // normalize time unix utc
+                    if (src.TimeZoneOffset != 0) daily.UnixTime += src.TimeZoneOffset;
+                }
             }
 
             return output;
@@ -97,13 +105,15 @@ namespace MultiWeatherApi {
                     TimeZone = output[0]?.TimeZone,
                     TimeZoneOffset = output[0]?.TimeZoneOffset ?? 0.0f,
                     UnixTime = date.Date.ToUnixTime(),
-                    Alerts = new[] { new Alert {
+                    Alerts = new[] { 
+                        new Alert {
                             Title = "NO AVAILABLE FORECAST FOR THE REQUESTED DATE.",
                             Description = $"You requested a forecast for {date.Date:o}",
                             Severity = Severity.Warning,
                             StartUnixTime = DateTime.UtcNow.ToUnixTime(),
                             ExpiresUnixTime = date.Date.AddDays(-7).ToUnixTime(),
-                        } },
+                        } 
+                    }.ToList(),
                 };
             }
             return theRightWeather;

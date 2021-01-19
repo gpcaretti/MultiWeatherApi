@@ -49,7 +49,7 @@ namespace MultiWeatherApi.DarkSky.Model {
 
         /// <summary>Any weather alerts related to this location.</summary>
         [JsonProperty("alerts")]
-        public IList<Alert> Alerts { get; set; }
+        public List<Alert> Alerts { get; set; }
 
         #region Internals
 
