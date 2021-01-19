@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using GenericApi.Test;
 using Helpers;
 using Microsoft.Extensions.Configuration;
 using MultiWeatherApi.Model;
@@ -80,9 +79,7 @@ namespace OpenWeather.Test {
         }
 
         [Fact]
-#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-        public async Task Serialize_OpenW_onecall() {
-#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+        public void Serialize_OpenW_onecall() {
             var filename = "./Resources/OpenW_onecall.json";
             var client = new WrapperClassForTest(_openWeatherApiKey);
 
@@ -108,9 +105,7 @@ namespace OpenWeather.Test {
         }
 
         [Fact]
-#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-        public async Task ParseJsonFromStream_using_OpenW_onecall_json() {
-#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+        public void ParseJsonFromStream_using_OpenW_onecall_json() {
             var filename = "./Resources/OpenW_onecall.json";
 
             var client = new WrapperClassForTest(_openWeatherApiKey);
@@ -184,9 +179,14 @@ namespace OpenWeather.Test {
 
                 output.Alerts.ShouldNotBeNull();
                 output.Alerts.Count.ShouldBe(2);
+                output.Alerts[0].Sender.ShouldBe("NWS Tulsa (Eastern Oklahoma)");
+                output.Alerts[0].Title.ShouldBe("Heat Advisory");
+                output.Alerts[0].StartTime.ToUnixTimeSeconds().ShouldBe(1597341600);
+                output.Alerts[0].ExpiresTime.ToUnixTimeSeconds().ShouldBe(1597366800);
+                output.Alerts[0].Description.ShouldStartWith("...HEAT ADVISORY REMAINS IN EFFECT");
                 output.Alerts[0].Severity.ShouldBe(Severity.Unknown);
-                output.Alerts[0].Sender.ShouldNotBeNullOrEmpty();
-                output.Alerts[0].Title.ShouldNotBeNullOrEmpty();
+
+                output.Alerts[1].Description.ShouldBe("...Test\nWeather\nCondition.");
             }
 
         }
