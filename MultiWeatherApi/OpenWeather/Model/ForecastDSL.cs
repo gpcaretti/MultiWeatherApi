@@ -33,19 +33,19 @@ namespace MultiWeatherApi.OpenWeather.Model {
 
         /// <summary>the minute-by-minute conditions for the next hour.</summary>
         [JsonProperty("minutely")]
-        public IList<MinutelyDataPoint> Minutely { get; set; }
+        public List<MinutelyDataPoint> Minutely { get; set; }
 
         /// <summary>the hour-by-hour conditions for the next two days.</summary>
         [JsonProperty("hourly")]
-        public IList<DataPointDSL> Hourly { get; set; }
+        public List<DataPointDSL> Hourly { get; set; }
 
         /// <summary>the daily conditions for the next week.</summary>
         [JsonProperty("daily")]
-        public IList<DataPointDSL> Daily { get; set; }
+        public List<DataPointDSL> Daily { get; set; }
 
         /// <summary>any weather alerts related to this location.</summary>
         [JsonProperty("alerts")]    //, JsonConverter(typeof(MyAlertsConverter))]
-        public IList<Alert> Alerts { get; set; }
+        public List<Alert> Alerts { get; set; }
 
         #region Internals
 

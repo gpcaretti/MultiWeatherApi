@@ -35,14 +35,27 @@ var factory = new WeatherFactory()
 IWeatherService client = factory.Create(WeatherFactory.DarkSkyServiceId, "YOUR API KEY HERE");
 // or IWeatherService client = factory.Create(WeatherFactory.OpenWeatherServiceId, "YOUR API KEY HERE");
 
-// get current weather with detailed hour by hour conditions using Imperial units and the default language (English)
-Weather weather = await client.GetCurrentWeather(LondonLatitude, LondonLongitude, Unit.Imperial);
+// get current weather with detailed hour by hour conditions using
+// Imperial units and the default language (English)
+Weather weather = await client.GetCurrentWeather(
+                    LondonLatitude, 
+                    LondonLongitude, 
+                    Unit.Imperial);
 
-// get current weather and the forecast for the next n days (usually 7) using Italian lang.
-WeatherGroup forecast = await client.GetForecast(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+// get current weather and the forecast for the next n days
+// (usually 7) using Italian lang.
+WeatherGroup forecast = await client.GetForecast(
+                    BolognaLatitude,
+                    BolognaLongitude,
+                    Unit.SI, 
+                    Language.Italian);
 
-// get forecast for a specific day using default units (SI) and language (English)
-Weather weather = await client.GetWeatherByDate(LondonLatitude, LondonLongitude, DateTime.UtcNow.AddDays(+2));
+// get forecast for a specific day using default units (SI) 
+// and language (English)
+Weather weather = await client.GetWeatherByDate(
+                    LondonLatitude, 
+                    LondonLongitude, 
+                    DateTime.UtcNow.AddDays(+2));
 
 ...
 ```
@@ -65,8 +78,7 @@ using MultiWeatherApi.OpenWeather.Model;
 
 // DarkSky direct API
 IDarkSkyService client = new DarkSkyService("YOUR API KEY HERE");
-Forecast forecast = await client.GetCurrentWeather(latitude, longitude);
-...
+Forecast current = await client.GetCurrentWeather(latitude, longitude);
 Forecast forecast = await client.GetForecast(latitude, longitude);
 
 ...
@@ -74,7 +86,6 @@ Forecast forecast = await client.GetForecast(latitude, longitude);
 // OpenWeather direct API
 IOpenWeatherService client = new OpenWeatherService("YOUR API KEY HERE");
 WeatherConditions weather = await client.GetCurrentWeather(latitude, longitude);
-// ...
 ForecastDSL forecast = await client.GetForecastDSL(latitude, longitude);
 
 ...
@@ -99,7 +110,12 @@ implement them.
 Once implemented a new service, to include as new service of the *generic* API you can
 modify the `WeatherFactory` or extend it like this:
 
-```
+```c#
+using MultiWeatherApi;
+using MultiWeatherApi.Model;
+
+...
+
 public class WeatherFactoryExt : WeatherFactory {
 
     public static readonly Guid OtherServiceId = new Guid("UNIQUE-GUIDE-HERE");

@@ -4,25 +4,32 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Gianpiero Caretti</Authors>
     <Company>GP software engineering</Company>
-    <Description>API abstraction for OpenWeatherMap and DarkSky API</Description>
+    <Description>.NET Standard 2.0 API abstraction for multiple weather services (OpenWeather, DarkSky, ...)</Description>
     <PackageTags>Weather OpenWeatherMap DarkSky netstandard c#</PackageTags>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryType>GitHub</RepositoryType>
-		<ApplicationIcon>packageIcon.ico</ApplicationIcon>
-		<PackageIcon>packageIcon.png</PackageIcon>
-		<version>1.0.0-pre1</version>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<RepositoryType>GitHub</RepositoryType>
+	<RepositoryUrl>https://github.com/gpcaretti/MultiWeatherApi</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/gpcaretti/MultiWeatherApi</PackageProjectUrl>
+	<ApplicationIcon>packageIcon.ico</ApplicationIcon>
+	<IncludeSymbols>false</IncludeSymbols>
+
+	<PackageIcon>packageIcon.png</PackageIcon>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<version>1.0.0-pre2</version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<RepositoryUrl>https://github.com/gpcaretti/MultiWeatherApi</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/gpcaretti/MultiWeatherApi</PackageProjectUrl>
 		<Copyright>Copyright © GP software engineering</Copyright>
 	</PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<DebugType>Full</DebugType>
+	</PropertyGroup>
+	
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="TinyMapper" Version="3.0.3" />

@@ -105,7 +105,7 @@ namespace MultiWeatherApi.OpenWeather.Model {
         public float? ProbOfPrecipitation { get; set; }
 
         [JsonProperty("weather")]
-        public IList<WeatherInfo> WeatherInfo { get; set; }
+        public List<WeatherInfo> WeatherInfo { get; set; }
 
         #region Internals
 

@@ -50,7 +50,7 @@ namespace MultiWeatherApi.Model {
         ///     the regions covered by this alert.
         /// </summary>
         [JsonProperty("regions")]
-        public IList<string> Regions { get; set; }
+        public List<string> Regions { get; set; }
 
         /// <summary>
         ///     the text description of this alert.

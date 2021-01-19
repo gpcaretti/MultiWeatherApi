@@ -19,7 +19,7 @@ namespace MultiWeatherApi.Model {
         public float TimeZoneOffset { get; set; }
 
         /// <summary>Any weather alerts related to this location.</summary>
-        public IList<Alert> Alerts { get; set; }
+        public List<Alert> Alerts { get; set; }
 
         /// <summary>
         ///     Empty group

@@ -197,6 +197,8 @@ namespace GenericApi.Test {
             output.SunsetUnixTime.ShouldNotBeNull();
             output.SunriseUnixTime.Value.ShouldBeGreaterThan(utcDay.Date.ToUnixTime());
             output.SunsetUnixTime.Value.ShouldBeGreaterThan(output.SunriseUnixTime.Value);
+            output.Hourly.ShouldNotBeEmpty();
+            output.Hourly.ShouldAllBe(hr => hr.Time > utcDay.Date);
         }
 
         private void Check_Forecast_Output(Weather output, DateTime utcDay, float timeZoneOffset) {
