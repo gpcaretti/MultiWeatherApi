@@ -11,21 +11,35 @@ namespace MultiWeatherApi {
     /// </summary>
     public abstract class WeatherServiceBase {
 
-        private protected readonly string _apiKey;
+        protected readonly string _apiKey;
+
+        /// <summary>
+        ///     This is the shared http client (to avoid to instantiate it for each call)
+        /// </summary>
+        protected readonly HttpClient _httpClient;
+
+        /// <summary>
+        ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
+        /// </summary>
+        /// <param name="apiKey">The API key to use.</param>
+        public WeatherServiceBase(string apiKey) : this(apiKey, null) {
+        }
 
         /// <summary>
         ///     Initializes a new instance of the weather service.
         /// </summary>
-        /// <param name="key">The API key to use.</param>
-        public WeatherServiceBase(string key) { 
-            _apiKey = key;
+        /// <param name="apiKey">The API key to use.</param>
+        /// <param name="handler">the http message handler. If null use the one from <see cref="GetMessageHandler"/></param>
+        public WeatherServiceBase(string apiKey, HttpMessageHandler handler) {
+            _apiKey = apiKey;
+            _httpClient = new HttpClient(handler ?? GetMessageHandler());
         }
 
         /// <summary>
-        ///     Creates a HttpClientHandler that supports compression for responses.
+        ///     Creates the default HttpClientHandler that supports compression for responses. Override this method for custom handlers.
         /// </summary>
-        /// <returns>The <see cref="HttpClientHandler"/> with compression support.</returns>
-        protected virtual HttpClientHandler GetCompressionHandler() {
+        /// <remarks>Override this method for custom handlers</remarks>
+        protected virtual HttpClientHandler GetMessageHandler() {
             var compressionHandler = new HttpClientHandler();
             if (compressionHandler.SupportsAutomaticDecompression) {
                 compressionHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;

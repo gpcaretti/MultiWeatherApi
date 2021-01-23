@@ -37,7 +37,7 @@ namespace OpenWeather.Test {
 #pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
             var filename = "./Resources/OpenW_currentweather.json";
 
-            var client = new WrapperClassForTest(_openWeatherApiKey);
+            var client = new WeatherServiceBase_Wrapper(_openWeatherApiKey);
             using (var jsonStream = File.OpenRead(filename)) {
                 var output = client.ParseJsonFromStream_Wrapper<MultiWeatherApi.OpenWeather.Model.WeatherConditions>(jsonStream);
                 output.Coordinates.Latitude.ShouldBe(44.4667);
@@ -56,7 +56,7 @@ namespace OpenWeather.Test {
         public async Task Serialize_OpenW_currentWeather() {
 #pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
             var filename = "./Resources/OpenW_currentweather.json";
-            var client = new WrapperClassForTest(_openWeatherApiKey);
+            var client = new WeatherServiceBase_Wrapper(_openWeatherApiKey);
 
             MultiWeatherApi.OpenWeather.Model.WeatherConditions input = null;
             using (var jsonStream = File.OpenRead(filename)) {
@@ -81,7 +81,7 @@ namespace OpenWeather.Test {
         [Fact]
         public void Serialize_OpenW_onecall() {
             var filename = "./Resources/OpenW_onecall.json";
-            var client = new WrapperClassForTest(_openWeatherApiKey);
+            var client = new WeatherServiceBase_Wrapper(_openWeatherApiKey);
 
             ForecastDSL input = null;
             using (var jsonStream = File.OpenRead(filename)) {
@@ -108,7 +108,7 @@ namespace OpenWeather.Test {
         public void ParseJsonFromStream_using_OpenW_onecall_json() {
             var filename = "./Resources/OpenW_onecall.json";
 
-            var client = new WrapperClassForTest(_openWeatherApiKey);
+            var client = new WeatherServiceBase_Wrapper(_openWeatherApiKey);
 
             using (var jsonStream = File.OpenRead(filename)) {
                 var output = client.ParseJsonFromStream_Wrapper<ForecastDSL>(jsonStream, new MyAlertConverter());

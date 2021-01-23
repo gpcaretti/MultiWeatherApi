@@ -42,7 +42,10 @@ namespace MultiWeatherApi {
             Code = code;
         }
 
+#if !NETSTANDARD1_3
         protected WeatherException(SerializationInfo info, StreamingContext context) : base(info, context) {
         }
+#endif
     }
+
 }

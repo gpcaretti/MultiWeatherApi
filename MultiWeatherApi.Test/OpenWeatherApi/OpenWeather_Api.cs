@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
 using MultiWeatherApi.OpenWeather.Model;
+using RichardSzalay.MockHttp;
 using Shouldly;
 using Xunit;
 
@@ -72,7 +73,6 @@ namespace OpenWeather.Test {
 
         [Fact]
         public async Task GetCurrentWeatherByCityName_Test() {
-            // prepare
             var client = new OpenWeatherService(_apiKey);
             var output = await client.GetCurrentWeather(BolognaCityName, OWUnit.Metric, Language.Italian);
             // assert

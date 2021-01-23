@@ -7,9 +7,9 @@ namespace Helpers {
     /// <summary>
     ///     Just a wrapper to access protected methods
     /// </summary>
-    public class WrapperClassForTest : WeatherServiceBase {
+    public class WeatherServiceBase_Wrapper : WeatherServiceBase {
 
-        public WrapperClassForTest(string key) : base(key) {
+        public WeatherServiceBase_Wrapper(string key) : base(key) {
         }
 
         /// <summary>Just to test protected method</summary>
