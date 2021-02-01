@@ -6,28 +6,28 @@ using OWModel = MultiWeatherApi.OpenWeather.Model;
 using Nelibur.ObjectMapper;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace MultiWeatherApi {
 
     internal class OpenWeatherWrapper : IWeatherService {
 
-        private IOpenWeatherService _service;
-
-        /// <summary>Set the api key for the underneath weather service</summary>
-        public string ApiKey { set => _service = new OpenWeatherService(value); }
+        private readonly IOpenWeatherService _service;
 
         /// <summary>
-        ///     Default constructor. Require to soon set the <see cref="ApiKey"/>.
+        ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
         /// </summary>
-        public OpenWeatherWrapper() {
+        /// <param name="key">The API key to use.</param>
+        public OpenWeatherWrapper(string key) : this(key, null) {
         }
 
         /// <summary>
-        ///     Constructor allowing to set the <see cref="ApiKey"/> for the underneath weather service
+        ///     Initializes a new instance of the weather service
         /// </summary>
-        /// <param name="apiKey">the API key for the underneath weather service</param>
-        public OpenWeatherWrapper(string apiKey) {
-            ApiKey = apiKey;
+        /// <param name="apiKey">The API key to use.</param>
+        /// <param name="handler">the http message handler. If null use the default one.</param>
+        public OpenWeatherWrapper(string apiKey, HttpMessageHandler handler) {
+            _service = new OpenWeatherService(apiKey, handler);
         }
 
         public async Task<Weather> GetCurrentWeather(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {

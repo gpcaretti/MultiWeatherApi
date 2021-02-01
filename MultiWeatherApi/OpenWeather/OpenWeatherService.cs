@@ -13,15 +13,18 @@ namespace MultiWeatherApi.OpenWeather {
     /// </summary>
     public class OpenWeatherService : WeatherServiceBase, IOpenWeatherService {
 
-        const string OpenWeatherMapEndpoint = "https://api.openweathermap.org/data/2.5/";
+        /// <summary>
+        ///     The root url of the end point
+        /// </summary>
+        public const string EndPointRoot = "https://api.openweathermap.org/data/2.5/";
 
-        const string WeatherCoordinatesUri = OpenWeatherMapEndpoint + "weather?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
-        const string WeatherCityUri = OpenWeatherMapEndpoint + "weather?q={0}&units={1}&lang={2}&appid={3}";
+        const string WeatherCoordinatesUri = EndPointRoot + "weather?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
+        const string WeatherCityUri = EndPointRoot + "weather?q={0}&units={1}&lang={2}&appid={3}";
 
-        const string ForecastCoordinatesUri = OpenWeatherMapEndpoint + "forecast?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
-        const string ForecastCityUri = OpenWeatherMapEndpoint + "forecast?q={0}&units={1}&lang={2}&appid={3}";
+        const string ForecastCoordinatesUri = EndPointRoot + "forecast?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
+        const string ForecastCityUri = EndPointRoot + "forecast?q={0}&units={1}&lang={2}&appid={3}";
 
-        const string ForecastOneCallUri = OpenWeatherMapEndpoint + "onecall?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
+        const string ForecastOneCallUri = EndPointRoot + "onecall?lat={0}&lon={1}&units={2}&lang={3}&appid={4}";
 
         /// <summary>
         ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
@@ -52,7 +55,7 @@ namespace MultiWeatherApi.OpenWeather {
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 ThrowExceptionIfResponseError(response);
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                    return ParseJsonFromStream<WeatherConditions>(responseStream);
+                    return ParseJsonFromStream<WeatherConditions>(responseStream, new MyAlertConverter());
                 }
             }
             catch (WeatherException) {
@@ -68,6 +71,13 @@ namespace MultiWeatherApi.OpenWeather {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="unit"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public async Task<WeatherConditions> GetCurrentWeather(
             string city,
             OWUnit unit = OWUnit.Standard,
@@ -79,8 +89,11 @@ namespace MultiWeatherApi.OpenWeather {
                 var url = string.Format(WeatherCityUri, city, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 ThrowExceptionIfResponseError(response);
+#if DEBUG
+    var json = await response.Content.ReadAsStringAsync();
+#endif
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                    return ParseJsonFromStream<WeatherConditions>(responseStream);
+                    return ParseJsonFromStream<WeatherConditions>(responseStream, new MyAlertConverter());
                 }
             }
             catch (WeatherException) {
@@ -107,6 +120,9 @@ namespace MultiWeatherApi.OpenWeather {
                 var url = string.Format(ForecastCoordinatesUri, latitude, longitude, unit.ToString().ToLower(), language.ToValue().ToLower(), _apiKey);
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 ThrowExceptionIfResponseError(response);
+#if DEBUG
+                var json = await response.Content.ReadAsStringAsync();
+#endif
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
                     return ParseJsonFromStream<MultiWeatherConditions>(responseStream, new MyAlertConverter());
                 }
@@ -136,7 +152,7 @@ namespace MultiWeatherApi.OpenWeather {
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 ThrowExceptionIfResponseError(response);
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                    return ParseJsonFromStream<MultiWeatherConditions>(responseStream);
+                    return ParseJsonFromStream<MultiWeatherConditions>(responseStream, new MyAlertConverter());
                 }
             }
             catch (WeatherException) {
@@ -176,7 +192,7 @@ namespace MultiWeatherApi.OpenWeather {
     var json = await response.Content.ReadAsStringAsync();
 #endif                    
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                    var output = ParseJsonFromStream<ForecastDSL>(responseStream);
+                    var output = ParseJsonFromStream<ForecastDSL>(responseStream, new MyAlertConverter());
                     // patch a bit the output and return it
                     return PatchReturnedData(output);
                 }

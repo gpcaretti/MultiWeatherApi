@@ -1,40 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<!-- see https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries#how-to-multitarget -->
-    <TargetFrameworks>netstandard2.0;netstandard1.3;net45</TargetFrameworks>
-    <Authors>Gianpiero Caretti</Authors>
-    <Company>GP software engineering</Company>
-    <Description>.NET Standard 2.0 API abstraction for multiple weather services (OpenWeather, DarkSky, ...)</Description>
-    <PackageTags>Weather OpenWeatherMap DarkSky netstandard c#</PackageTags>
-	<RepositoryType>GitHub</RepositoryType>
-	<RepositoryUrl>https://github.com/gpcaretti/MultiWeatherApi</RepositoryUrl>
-	<PackageProjectUrl>https://github.com/gpcaretti/MultiWeatherApi</PackageProjectUrl>
-	<ApplicationIcon>packageIcon.ico</ApplicationIcon>
-	<IncludeSymbols>false</IncludeSymbols>
+		<TargetFrameworks>net5.0;netstandard2.1;netstandard2.0;netstandard1.3;net45</TargetFrameworks>
+		<Authors>Gianpiero Caretti</Authors>
+		<Company>GP software engineering</Company>
+		<Description>A multiplatform .NET API abstraction for multiple weather services (OpenWeather, DarkSky, ...)</Description>
+		<PackageTags>Weather OpenWeatherMap DarkSky netstandard net5.0</PackageTags>
+		<RepositoryType>GitHub</RepositoryType>
+		<RepositoryUrl>https://github.com/gpcaretti/MultiWeatherApi</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/gpcaretti/MultiWeatherApi</PackageProjectUrl>
+		<ApplicationIcon>packageIcon.ico</ApplicationIcon>
+		<IncludeSymbols>false</IncludeSymbols>
 
-	<PackageIcon>packageIcon.png</PackageIcon>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-	<version>1.0.0-pre2</version>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Copyright>Copyright © GP software engineering</Copyright>
+		<PackageIcon>packageIcon.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<version>1.0.0-pre2</version>
+		<!--<Deterministic>False</Deterministic>-->
+		<Copyright>Copyright © GP software engineering 2021</Copyright>
 	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DocumentationFile>C:\WA\GPsoftware\MultiWeatherApi\MultiWeatherApi\MultiWeatherApi.xml</DocumentationFile>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<DebugType>Full</DebugType>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
 	</PropertyGroup>
-	
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="TinyMapper" Version="3.0.3" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="TinyMapper" Version="3.0.3" />
+	</ItemGroup>
 
 	<!-- Need to conditionally bring in references for the .NET Framework 4.5 target -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
@@ -42,11 +44,11 @@
 		<Reference Include="System.Threading.Tasks" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\packageIcon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\packageIcon.png">
+			<Pack>True</Pack>
+			<PackagePath />
+		</None>
+	</ItemGroup>
 
 </Project>

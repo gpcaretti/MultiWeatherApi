@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
+using System.IO;
+using System.Net;
+using Helpers;
 using Microsoft.Extensions.Configuration;
+using MultiWeatherApi;
 using MultiWeatherApi.DarkSky;
 using MultiWeatherApi.DarkSky.Model;
 using MultiWeatherApi.Model;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using RichardSzalay.MockHttp;
 using Shouldly;
 using Xunit;
 
@@ -27,40 +31,38 @@ namespace DarkSky.Test {
         private const double BolognaLongitude = 11.352134;
 
         /// <summary>
-        ///     API key to be used for testing. This should be specified in the test project's app.config file.
-        /// </summary>
-        private string _apiKey;
-
-        /// <summary>
         ///     Sets up all tests by retrieving the API key from app.config.
         /// </summary>
         public DarkSky_Api() {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("xunit.config.json")
-                .Build();
-            _apiKey = config["DarkSkyApiKey"];
+            //var config = new ConfigurationBuilder()
+            //    .AddJsonFile("xunit.config.json")
+            //    .Build();
+            //_apiKey = config["DarkSkyApiKey"];
         }
 
         /// <summary>
         ///     Checks that attempting to retrieve data with a null API key throws an exception.
         /// </summary>
         [Fact]
-        public void NullKeyThrowsException() {
-            var client = new DarkSkyService(null);
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
-        }
+        public void InvalidKeyThrowsException() {
+            // prepare
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp
+                .When(DarkSkyService.EndPointRoot + "*")
+                .Respond(HttpStatusCode.Unauthorized);
+            // assert
+            var client = new DarkSkyService(null, mockHttp);
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude));
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude));
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
 
-        /// <summary>
-        ///     Checks that attempting to retrieve data with an empty string as the API key throws an exception.
-        /// </summary>
-        [Fact]
-        public void EmptyKeyThrowsException() {
-            var client = new DarkSkyService(string.Empty);
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
+            client = new DarkSkyService(string.Empty, mockHttp);
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude));
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude));
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
+
+            client = new DarkSkyService("fake_key", mockHttp);
+            Assert.ThrowsAsync<WeatherException>(async () => await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, DateTime.Today.AddDays(+1)));
         }
 
         /// <summary>
@@ -68,211 +70,122 @@ namespace DarkSky.Test {
         ///     <para>An API key can be specified in the project's app.config file.</para>
         /// </summary>
         [Fact]
-        public async Task ValidKeyRetrievesData() {
-            var client = new DarkSkyService(_apiKey);
+        public async void GetCurrentWeatherByCoordinates_Test() {
+            // prepare
+            Forecast output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetCurrentWeather_US.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                IDarkSkyService client = new DarkSkyService("a_valid_key", mockHttp);
 
-            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude);
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.NotNull(result.Hourly);
+                output = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude, DSUnit.US, Language.English);
+                stream.Close();
+            }
 
-            result = await client.GetForecast(AlcatrazLatitude, AlcatrazLongitude);
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.NotNull(result.Daily);
-            Assert.NotNull(result.Daily.Data);
-            result.Daily.Data.Count.ShouldBeGreaterThan(0);
-        }
+            // assert
+            Assert.NotNull(output);
+            Assert.NotNull(output.Currently);
+            Assert.NotNull(output.Hourly);
+            Assert.NotNull(output.Daily);
+            output.Coordinates.ShouldNotBeNull();
+            output.Coordinates.Latitude.ShouldBe(37.8267);
+            output.Coordinates.Longitude.ShouldBe(-122.423);
+            output.TimeZone.ShouldBe("America/Los_Angeles");
+            output.TimeZoneOffset.ShouldBe(-8.0f);
 
-        /// <summary>
-        ///     Checks that a request can be made for a non-US location. Added to test GitHub issue 6.
-        /// </summary>
-        [Fact]
-        public async Task NonUSDataCanBeRetrieved() {
-            var client = new DarkSkyService(_apiKey);
+            output.Alerts.ShouldNotBeNull();
+            output.Alerts.Count.ShouldBe(2);
+            output.Alerts[0].Title.ShouldBe("High Wind Warning");
+            output.Alerts[0].Description.ShouldNotBeNullOrEmpty();
+            output.Alerts[0].ExpiresTime.ShouldBe(1611759600.ToDateTimeOffset());
+            output.Alerts[0].Uri.ShouldStartWith("https://alerts.weather.gov/");
+            output.Alerts[1].Title.ShouldBe("Wind Advisory");
 
-            var result = await client.GetCurrentWeather(BolognaLatitude, BolognaLongitude, DSUnit.SI, Language.Italian);
+            output.Currently.ShouldNotBeNull();
+            output.Currently.UnixTime.ShouldBe(1611642210);
+            output.Currently.Time.ToUnixTimeSeconds().ShouldBe(output.Currently.UnixTime);
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
+            output.Currently.Wind.Speed.ShouldBe(9.23f);
+            output.Currently.Wind.Bearing.ShouldBe(308);
+            output.Currently.Visibility.ShouldBe(10f);
 
-        /// <summary>
-        ///     Checks that requests can be made with DSUnit.SI.
-        /// </summary>
-        [Fact]
-        public async Task UnitSIWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.SI);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        /// <summary>
-        ///     Checks that requests can be made with DSUnit.UK.
-        /// </summary>
-        [Fact]
-        public async Task UnitUKWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.UK);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        /// <summary>
-        /// Checks that requests can be made with DSUnit.UK2.
-        /// Added to test GitHub issue 18.
-        /// </summary>
-        [Fact]
-        public async Task UnitUK2WorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-
-            var result = await client.GetCurrentWeather(MumbaiLatitude, MumbaiLongitude, DSUnit.UK2);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        /// <summary>
-        /// Checks that specifying a block to be excluded from the results
-        /// will cause it to be null in the returned forecast.
-        /// </summary>
-        [Fact]
-        public async Task ExclusionWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-            var exclusionList = new List<Exclude> { Exclude.Minutely };
-
-            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, DSUnit.SI, Language.Italian);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.Null(result.Minutely);
-        }
-
-        /// <summary>
-        /// Checks that specifying multiple blocks to be excluded causes
-        /// them to left out.
-        /// </summary>
-        [Fact]
-        public async Task MultipleExclusionWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-            var exclusionList = new List<Exclude> { Exclude.Minutely, Exclude.Hourly, Exclude.Daily };
-
-            var result = await client.GetWeather(AlcatrazLatitude, AlcatrazLongitude, null, exclusionList, DSUnit.SI);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.Null(result.Minutely);
-            Assert.Null(result.Hourly);
-            Assert.Null(result.Daily);
+            output.Hourly.Data.Count.ShouldBe(49);
+            output.Hourly.Data[0].ApparentTemperature.Daily.ShouldBe(40.9f);
+            output.Daily.Data.Count.ShouldBe(8);
+            output.Daily.Data[1].Temperature.Max.ShouldBe(49.4f);
         }
 
         /// <summary>
         ///     Checks that specifying multiple blocks to be excluded causes them to left out.
         /// </summary>
         [Fact]
-        public async Task CurrentAnd7DaysForecastWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-            var exclusionList = new List<Exclude> { Exclude.Hourly, Exclude.Minutely, Exclude.Alerts, Exclude.Flags };
-
-            var result = await client.GetWeather(BolognaLatitude, BolognaLongitude, null, exclusionList, DSUnit.Auto, Language.Italian);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.Null(result.Minutely);
-            Assert.Null(result.Hourly);
-
-            Assert.NotNull(result.Currently);
-            Assert.NotNull(result.Daily);
-            Assert.NotNull(result.Daily.Data);
-            Assert.NotEmpty(result.Daily.Data);
-
-            DateTimeOffset today =  DateTime.Today;
-
-            Assert.Equal(result.Currently.Time.LocalDateTime.Date, today);
-            Assert.Equal(result.Daily.Data[0].Time.LocalDateTime.Date, today);
-        }
-
-        /// <summary>
-        ///     Checks that the service returns data using the specified units of measurement.
-        /// </summary>
-        [Fact]
-        public async Task UnitsCanBeSpecified() {
-            var client = new DarkSkyService(_apiKey);
-
-            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude, DSUnit.CA);
-
-            Assert.NotNull(result);
-            Assert.Equal(result.Flags.Units, DSUnit.CA.ToValue());
-        }
-
-        /// <summary>
-        /// Checks that retrieving data for a past date works correctly.
-        /// </summary>
-        [Fact]
-        public async Task CanRetrieveForThePast() {
-            var client = new DarkSkyService(_apiKey);
-            var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
-
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        [Fact]
-        public async Task GetForecast_ByCoordinates_Test() {
+        public async void CurrentAnd7DaysForecastWorksCorrectly() {
             // prepare
-            var client = new DarkSkyService(_apiKey);
-            var output = await client.GetForecast(BolognaLatitude, BolognaLongitude, DSUnit.SI, Language.Italian);
+            Forecast output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_CurrentAnd7DaysForecast_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                IDarkSkyService client = new DarkSkyService("a_valid_key", mockHttp);
+
+                var exclusionList = new List<Exclude> { Exclude.Hourly, Exclude.Minutely, Exclude.Alerts, Exclude.Flags };
+                output = await client.GetWeather(BolognaLatitude, BolognaLongitude, null, exclusionList, DSUnit.Auto, Language.Italian);
+                stream.Close();
+            }
+
             // assert
             Assert.NotNull(output);
             Assert.NotNull(output.Currently);
+            Assert.Null(output.Minutely);
+            Assert.Null(output.Hourly);
+            Assert.NotNull(output.Currently);
             Assert.NotNull(output.Daily);
-            output.Coordinates.Latitude.ShouldNotBe(0.0);
-            output.Coordinates.Longitude.ShouldNotBe(0.0);
-            output.Coordinates.Latitude.ShouldBe(BolognaLatitude);
-            output.Coordinates.Longitude.ShouldBe(BolognaLongitude);
-            output.Currently.Temperature.Daily.ShouldNotBeNull();
-            output.Currently.Temperature.DewPoint.ShouldNotBe(0.0f);
-            output.Currently.Temperature.Humidity.ShouldNotBeNull();
-            output.Currently.Temperature.Humidity.Value.ShouldBeInRange(1, 100);
-            output.Daily.Summary.ShouldNotBeNullOrWhiteSpace();
-            output.Daily.Data.Count.ShouldBeGreaterThan(0);
-            var yesterday = DateTime.Today.AddDays(-1);
-            output.Daily.Data[0].Time.ShouldBeGreaterThan(yesterday);
-            output.Daily.Data[0].Temperature.Pressure.ShouldNotBeNull();
-            output.Daily.Data[0].Temperature.Pressure.Value.ShouldBeGreaterThan(0);
-            output.Daily.Data[0].Temperature.Min.ShouldNotBeNull();
-            output.Daily.Data[0].Temperature.Max.ShouldNotBeNull();
-            output.Daily.Data[0].Temperature.Min.Value.ShouldBeLessThan(output.Daily.Data[0].Temperature.Max.Value);
+            Assert.NotNull(output.Daily.Data);
+            Assert.NotEmpty(output.Daily.Data);
+        }
 
-            // prepare imperial
-            var outputImperial = await client.GetForecast(BolognaLatitude, BolognaLongitude, DSUnit.US, Language.English);
+        ///// <summary>
+        ///// Checks that retrieving data for a past date works correctly.
+        ///// </summary>
+        //[Fact]
+        //public async void CanRetrieveForThePast() {
+        //    var client = new DarkSkyService("a_valid_key");
+        //    var date = DateTime.UtcNow.AddDays(-2);
+
+        //    var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date);
+
+        //    Assert.NotNull(result);
+        //    Assert.NotNull(result.Currently);
+        //}
+
+        [Fact]
+        public async void GetForecast_ByCoordinates_Test() {
+            // prepare
+            Forecast output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetForecast_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                IDarkSkyService client = new DarkSkyService("a_valid_key", mockHttp);
+
+                output = await client.GetForecast(BolognaLatitude, BolognaLongitude, DSUnit.SI, Language.Italian);
+                stream.Close();
+            }
+
             // assert
-            Assert.NotNull(outputImperial);
-            Assert.NotNull(outputImperial.Currently);
-            Assert.NotNull(outputImperial.Daily);
-            outputImperial.Coordinates.Latitude.ShouldBe(output.Coordinates.Latitude);
-            outputImperial.Coordinates.Longitude.ShouldBe(output.Coordinates.Longitude);
-            outputImperial.Currently.Temperature.Daily.ShouldNotBeNull();
-            outputImperial.Currently.Temperature.Daily.Value.ShouldBeGreaterThan(output.Currently.Temperature.Daily.Value);
-            outputImperial.Currently.Temperature.DewPoint.ShouldNotBe(output.Currently.Temperature.DewPoint);
-            outputImperial.Currently.Temperature.Humidity.ShouldNotBeNull();
-            outputImperial.Currently.Temperature.Humidity.Value.ShouldBeInRange(1, 100);
-            outputImperial.Daily.Data[0].Temperature.Min.ShouldNotBeNull();
-            outputImperial.Daily.Data[0].Temperature.Max.ShouldNotBeNull();
-            outputImperial.Daily.Data[0].Temperature.Min.Value.ShouldBeLessThan(outputImperial.Daily.Data[0].Temperature.Max.Value);
-            outputImperial.Daily.Data[0].ApparentTemperature.Min.Value.ShouldBeLessThan(outputImperial.Daily.Data[0].ApparentTemperature.Max.Value);
-            outputImperial.Daily.Data[0].Temperature.Min.Value.ShouldBeGreaterThan(output.Daily.Data[0].Temperature.Min.Value);
-            outputImperial.Daily.Data[0].Temperature.Max.Value.ShouldBeGreaterThan(output.Daily.Data[0].Temperature.Max.Value);
-            outputImperial.Daily.Data[0].Temperature.DewPoint.ShouldNotBe(output.Daily.Data[0].Temperature.DewPoint);
-            outputImperial.Daily.Data[0].Temperature.Humidity.ShouldNotBeNull();
-            outputImperial.Daily.Data[0].Temperature.Humidity.Value.ShouldBeInRange(1, 100);
+            Assert.NotNull(output);
+            Assert.NotNull(output.Currently);
+            Assert.Null(output.Minutely);
+            Assert.NotNull(output.Hourly);
+            Assert.NotNull(output.Hourly.Data);
+            Assert.NotEmpty(output.Hourly.Data);
+            Assert.NotNull(output.Daily);
+            Assert.NotNull(output.Daily.Data);
+            Assert.NotEmpty(output.Daily.Data);
         }
 
         /// <summary>
@@ -280,76 +193,59 @@ namespace DarkSky.Test {
         /// will cause it to be null in the returned forecast.
         /// </summary>
         [Fact]
-        public async Task TimeMachineExclusionWorksCorrectly() {
-            var client = new DarkSkyService(_apiKey);
-            var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
-            var exclusionList = new List<Exclude> { Exclude.Hourly };
+        public async void TimeMachineExclusionWorksCorrectly() {
+            // prepare
+            var date = new DateTime(2021, 01, 24, 10, 00, 01, DateTimeKind.Utc);
+            Forecast output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetWeatherByDate_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
 
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, exclusionList, DSUnit.SI);
+                var exclusionList = new List<Exclude> { Exclude.Minutely, Exclude.Hourly };
+                IDarkSkyService client = new DarkSkyService("a_valid_key", mockHttp);
+                output = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, exclusionList, DSUnit.SI);
+                stream.Close();
+            }
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-            Assert.Null(result.Hourly);
-        }
-
-        /// <summary>
-        /// Checks that the service returns data using the specified units of measurement.
-        /// </summary>
-        [Fact]
-        public async Task TimeMachineUnitsCanBeSpecified() {
-            var client = new DarkSkyService(_apiKey);
-            var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
-
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
-
-            Assert.NotNull(result);
-            Assert.Equal(result.Flags.Units, DSUnit.CA.ToValue());
-        }
-
-        [Fact]
-        public async Task TimeMachineWorksWithCommaDecimalSeperator() {
-            var client = new DarkSkyService(_apiKey);
-            var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
+            Assert.NotNull(output);
+            Assert.Null(output.Hourly);
+            Assert.NotNull(output.Currently);
+            Assert.NotNull(output.Daily);
+            Assert.NotNull(output.Daily.Data);
+            output.Daily.Data.Count.ShouldBe(1);
+            output.Daily.Data[0].Time.Date.ShouldBe(date.Date);
         }
 
         [Fact]
-        public async Task TimeMachineWorksWithPeriodDecimalSeperator() {
-            var client = new DarkSkyService(_apiKey);
-            var date = DateTime.Now.Subtract(new TimeSpan(2, 0, 0, 0));
+        public async void Serialize_onecall() {
+            var filename = "./Resources/DarkSky_onecall_SI.json";
+            var client = new WeatherServiceBase_Wrapper();
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-            var result = await client.GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, date, DSUnit.CA);
+            Forecast input = null;
+            using (var jsonStream = File.OpenRead(filename)) {
+                input = client.ParseJsonFromStream_Wrapper<Forecast>(jsonStream);
+            }
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        [Fact]
-        public async Task WorksWithCommaDecimalSeperator() {
-            var client = new DarkSkyService(_apiKey);
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
-        }
-
-        [Fact]
-        public async Task WorksWithPeriodDecimalSeperator() {
-            var client = new DarkSkyService(_apiKey);
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-            var result = await client.GetCurrentWeather(AlcatrazLatitude, AlcatrazLongitude);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Currently);
+            string outputJson = null;
+            using (var sw = new StringWriter())
+            using (var jw = new JsonTextWriter(sw)) {
+                var serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                serializer.ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() };
+                //serializer.Formatting = Formatting.Indented;
+                //serializer.Converters.Add(new MyAlertConverter());
+                serializer.Serialize(jw, input);
+                outputJson = sw.ToString();
+            }
+            outputJson.ShouldNotBeNullOrWhiteSpace();
+            outputJson.Length.ShouldBeGreaterThan(32);
+            outputJson[0].ShouldBe('{');
+            outputJson[outputJson.Length - 1].ShouldBe('}');
+            outputJson[outputJson.Length - 1].ShouldBe('}');
+            outputJson.ShouldContain("\"lat\":");
+            outputJson.ShouldContain("\"currently\":");
         }
     }
 }

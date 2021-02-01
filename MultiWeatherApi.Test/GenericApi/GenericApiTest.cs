@@ -7,6 +7,7 @@ using MultiWeatherApi;
 using MultiWeatherApi.DarkSky;
 using MultiWeatherApi.Model;
 using MultiWeatherApi.OpenWeather;
+using RichardSzalay.MockHttp;
 using Shouldly;
 using Xunit;
 
@@ -27,20 +28,17 @@ namespace GenericApi.Test {
         private const double BolognaLongitude = 11.352134;
         private const string BolognaCityName = "Bologna";
 
-
-        private string _openWeatherApiKey;
-        private string _darkSkyApiKey;
         private WeatherFactory _factory;
 
         /// <summary>
-        ///     Sets up all tests by retrieving the API key from cfg file.
+        ///     Sets up the tests
         /// </summary>
         public GenericApiTest() {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("./xunit.config.json")
-                .Build();
-            _darkSkyApiKey = config["DarkSkyApiKey"];
-            _openWeatherApiKey = config["OpenWeatherApiKey"];
+            //var config = new ConfigurationBuilder()
+            //    .AddJsonFile("./xunit.config.json")
+            //    .Build();
+            //"a_valid_key" = config["DarkSkyApiKey"];
+            //"a_valid_key" = config["OpenWeatherApiKey"];
 
             _factory = new WeatherFactory();
         }
@@ -63,25 +61,57 @@ namespace GenericApi.Test {
 
         [Fact]
         public async void GetCurrentWeather_DarkSky() {
-            var dsClient = _factory.Create(WeatherFactory.DarkSkyServiceId, _darkSkyApiKey);
-            var output = await dsClient.GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // prepare
+            Weather output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetCurrentWeather_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.DarkSkyServiceId, "a_valid_key", mockHttp)
+                                    .GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+                stream.Close();
+            }
+
             // asserts
-            Check_CurrentWeather_Output(output, DateTime.UtcNow, 1.0f);
+            Check_CurrentWeather_Output(output, 1611642338.ToDateTimeOffset().UtcDateTime, 1.0f);
         }
 
         [Fact]
         public async void GetCurrentWeather_OpenW() {
-            //var owClient = _factory.Create(WeatherFactory.OpenWeatherServiceId, _openWeatherApiKey);
-            var owClient = _factory.Create(WeatherFactory.OpenWeatherServiceId, _openWeatherApiKey);
-            var output = await owClient.GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // prepare
+            Weather output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/OpenW_onecall_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(OpenWeatherService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.OpenWeatherServiceId, "a_valid_key", mockHttp)
+                                    .GetCurrentWeather(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+                stream.Close();
+            }
+
             // asserts
-            Check_CurrentWeather_Output(output, DateTime.UtcNow, 1.0f);
+            Check_CurrentWeather_Output(output, 1609711216.ToDateTimeOffset().UtcDateTime, 1.0f);
         }
 
         [Fact]
         public async void GetForecast_DarkSky() {
-            var dsClient = _factory.Create(WeatherFactory.DarkSkyServiceId, _darkSkyApiKey);
-            var output = await dsClient.GetForecast(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+            // prepare
+            WeatherGroup output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetForecast_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.DarkSkyServiceId, "a_valid_key", mockHttp)
+                                    .GetForecast(BolognaLatitude, BolognaLongitude, Unit.SI, Language.Italian);
+                stream.Close();
+            }
+
             // asserts
             output.TimeZone.ShouldNotBeNullOrEmpty();
             output.TimeZoneOffset.ShouldBe(1.0f);
@@ -90,7 +120,7 @@ namespace GenericApi.Test {
             output.Coordinates.Longitude.ShouldNotBe(0.0f);
 
             output.Count.ShouldBeGreaterThan(0);
-            var today = DateTime.UtcNow;
+            var today = 1611648875.ToDateTimeOffset().UtcDateTime;
             for (int i = 0; i < output.Count; i++) {
                 Check_Forecast_Output(output[i], today.AddDays(i), 1.0f);
             }
@@ -98,8 +128,19 @@ namespace GenericApi.Test {
 
         [Fact]
         public async void GetForecast_OpenW() {
-            var owClient = _factory.Create(WeatherFactory.OpenWeatherServiceId, _openWeatherApiKey);
-            var output = await owClient.GetForecast(BolognaLatitude, BolognaLongitude, Unit.Imperial, Language.Italian);
+            // prepare
+            WeatherGroup output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/OpenW_onecall_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(OpenWeatherService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.OpenWeatherServiceId, "a_valid_key", mockHttp)
+                                    .GetForecast(BolognaLatitude, BolognaLongitude, Unit.Imperial, Language.Italian);
+                stream.Close();
+            }
+
             // asserts
             output.TimeZone.ShouldNotBeNullOrEmpty();
             output.TimeZoneOffset.ShouldBe(1.0f);
@@ -108,7 +149,7 @@ namespace GenericApi.Test {
             output.Coordinates.Longitude.ShouldNotBe(0.0f);
 
             output.Count.ShouldBeGreaterThan(0);
-            var today = DateTime.UtcNow;
+            var today = 1609711216.ToDateTimeOffset().UtcDateTime;
             for (int i = 0; i < output.Count; i++) {
                 Check_Forecast_Output(output[i], today.AddDays(i), 1.0f);
             }
@@ -116,60 +157,42 @@ namespace GenericApi.Test {
 
         [Fact]
         public async void GetWeatherByDate_DarkSky() {
-            var dsClient = _factory.Create(WeatherFactory.DarkSkyServiceId, _darkSkyApiKey);
+            // prepare
+            DateTime theDate = 1611477054.ToDateTimeOffset().Date;
+            Weather output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/DarkSky_GetWeatherByDate_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(DarkSkyService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.DarkSkyServiceId, "a_valid_key", mockHttp)
+                                    .GetWeatherByDate(AlcatrazLatitude, AlcatrazLongitude, theDate, Unit.SI, Language.Italian);
+                stream.Close();
+            }
 
-            // prepare for tomorrow
-            var theDate = DateTime.UtcNow.AddDays(+1);
-            var output = await dsClient.GetWeatherByDate(LondonLatitude, LondonLongitude, theDate, Unit.SI, Language.Italian);
             // asserts
-            Check_Forecast_Output(output, theDate, 0.0f);
-
-            // prepare for the next 4th day
-            theDate = DateTime.UtcNow.AddDays(+4).Date;
-            output = await dsClient.GetWeatherByDate(LondonLatitude, LondonLongitude, theDate, Unit.SI, Language.Italian);
-            // asserts
-            Check_Forecast_Output(output, theDate, 0.0f);
-
-            // prepare for the next 20th day
-            theDate = DateTime.UtcNow.AddDays(+30).Date;
-            output = await dsClient.GetWeatherByDate(BolognaLatitude, BolognaLongitude, theDate, Unit.SI, Language.Italian);
-            // asserts
-            output.ShouldNotBeNull();
-            //(output.Alerts?.Count ?? 0).ShouldBeGreaterThan(0);
-            //output.Alerts[0].Title.ShouldNotBeNullOrEmpty();
-            output.TimeZone.ShouldNotBeNullOrEmpty();
-            output.TimeZoneOffset.ShouldBe(1.0f);
-            output.Summary.ShouldBeNullOrEmpty();
-            output.Description.ShouldBeNullOrEmpty();
+            Check_Forecast_Output(output, theDate, -8.0f);
         }
 
         [Fact]
         public async void GetWeatherByDate_OpenW() {
-            var owClient = _factory.Create(WeatherFactory.OpenWeatherServiceId, _openWeatherApiKey);
+            // prepare
+            var theDate = 1610276400.ToDateTimeOffset().UtcDateTime;
+            Weather output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/OpenW_onecall_SI.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(OpenWeatherService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                // execute
+                output = await _factory.Create(WeatherFactory.OpenWeatherServiceId, "a_valid_key", mockHttp)
+                                    .GetWeatherByDate(LondonLatitude, LondonLongitude, theDate, Unit.SI, Language.Italian);
+                stream.Close();
+            }
 
-            // prepare for tomorrow
-            var theDate = DateTime.UtcNow.AddDays(+1);
-            var output = await owClient.GetWeatherByDate(LondonLatitude, LondonLongitude, theDate, Unit.SI, Language.Italian);
             // asserts
-            Check_Forecast_Output(output, theDate, 0.0f);
-
-            // prepare for the next 4th day
-            theDate = DateTime.UtcNow.AddDays(+4).Date;
-            output = await owClient.GetWeatherByDate(LondonLatitude, LondonLongitude, theDate, Unit.SI, Language.Italian);
-            // asserts
-            Check_Forecast_Output(output, theDate, 0.0f);
-
-            // prepare for the next 20th day
-            theDate = DateTime.UtcNow.AddDays(+30).Date;
-            output = await owClient.GetWeatherByDate(BolognaLatitude, BolognaLongitude, theDate, Unit.SI, Language.Italian);
-            // asserts
-            output.ShouldNotBeNull();
-            (output.Alerts?.Count ?? 0).ShouldBeGreaterThan(0);
-            output.Alerts[0].Title.ShouldNotBeNullOrEmpty();
-            output.TimeZone.ShouldNotBeNullOrEmpty();
-            output.TimeZoneOffset.ShouldBe(1.0f);
-            output.Summary.ShouldBeNullOrEmpty();
-            output.Description.ShouldBeNullOrEmpty();
+            Check_Forecast_Output(output, theDate, 1.0f);
         }
 
         private void Check_CurrentWeather_Output(Weather output, DateTime utcDay, float timeZoneOffset) {

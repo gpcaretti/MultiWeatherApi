@@ -9,7 +9,7 @@ namespace Helpers {
     /// </summary>
     public class WeatherServiceBase_Wrapper : WeatherServiceBase {
 
-        public WeatherServiceBase_Wrapper(string key) : base(key) {
+        public WeatherServiceBase_Wrapper() : base("fake_key") {
         }
 
         /// <summary>Just to test protected method</summary>

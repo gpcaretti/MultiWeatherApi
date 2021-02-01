@@ -54,6 +54,13 @@
             </summary>
             <param name="key">The API key to use.</param>
         </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.#ctor(System.String,System.Net.Http.HttpMessageHandler)">
+            <summary>
+                Initializes a new instance of the weather service using the default <see cref="T:System.Net.Http.HttpMessageHandler"/>
+            </summary>
+            <param name="apiKey">The API key to use.</param>
+            <param name="handler">the http message handler. If null use the one from <see cref="!:GetMessageHandler"/></param>
+        </member>
         <member name="P:MultiWeatherApi.DarkSky.DarkSkyService.ApiCallsMade">
             <summary>
                 Gets the number of API calls made today using the given API key.
@@ -161,6 +168,11 @@
             <param name="requestUrl">The full URL from which the request should be made, including the API key and other parameters.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for a <see cref="T:MultiWeatherApi.DarkSky.Model.Forecast"/> containing weather data.</returns>
             <exception cref="T:MultiWeatherApi.WeatherException">Thrown if the response did not have a status code indicating success.</exception>
+        </member>
+        <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.PatchReturnedData(MultiWeatherApi.DarkSky.Model.Forecast)">
+            <summary>
+                if there is more info on the daily data, copy it on Currently
+            </summary>
         </member>
         <member name="M:MultiWeatherApi.DarkSky.DarkSkyService.UpdateApiCallsMade(System.Net.Http.HttpResponseMessage)">
             <summary>
@@ -694,6 +706,11 @@
             <param name="language">Default is <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
             <returns></returns>
         </member>
+        <member name="T:MultiWeatherApi.Mappers.TinyMappers">
+            <summary>
+                'public' just for unit tests :(
+            </summary>
+        </member>
         <member name="T:MultiWeatherApi.Model.Alert">
             <summary>
                  An severe weather alert issued by a weather service for a particular location.
@@ -853,57 +870,6 @@
         </member>
         <member name="P:MultiWeatherApi.Model.Temperature.Pressure">
             <summary>Pressure at the level sea</summary>
-        </member>
-        <member name="T:MultiWeatherApi.Model.TemperatureOLD">
-            <summary>
-                Temperature of the time frame they relate to
-            </summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Daily">
-            <summary>Daily temperature</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Morning">
-            <summary>Morning temperature</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Evening">
-            <summary>Evening temperature</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Night">
-            <summary>Night temperature</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Min">
-            <summary>
-                Min temperature of the day. If not set, returns the min between night and daily temp
-            </summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Max">
-            <summary>
-                Max temperature of the day. If not set, returns the max between night and daily temp
-            </summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentDaily">
-            <summary>Apparent daily temperature. If not set, returns the daily temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentMin">
-            <summary>Apparent min temperature. If not set, returns the min temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentMax">
-            <summary>Apparent max temperature. If not set, returns the max temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentNight">
-            <summary>Apparent night temperature. If not set, returns the night temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentEvening">
-            <summary>Apparent evening temperature. If not set, returns the evening temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.ApparentMorning">
-            <summary>Apparent morning temperature. If not set, returns the morning temperature.</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.DewPoint">
-            <summary>Dew point</summary>
-        </member>
-        <member name="P:MultiWeatherApi.Model.TemperatureOLD.Humidity">
-            <summary>Humidity (percentage)</summary>
         </member>
         <member name="T:MultiWeatherApi.Model.Severity">
             <summary>
@@ -1095,6 +1061,13 @@
             <summary>Sunset local time. See also <see cref="P:MultiWeatherApi.Model.Weather.SunsetUnixTime"/></summary>
             <remarks>Null for hourly details</remarks>
         </member>
+        <member name="P:MultiWeatherApi.Model.Weather.Hourly">
+            <summary>
+                Hour-by-hour conditions:
+                * Current condtions: for the next two days.
+                * Daily: is null
+            </summary>
+        </member>
         <member name="T:MultiWeatherApi.Model.WeatherGroup">
             <summary>
                 Current and forecast weather conditions for a particular location.
@@ -1239,11 +1212,6 @@
             <param name="longitude"></param>
             <param name="unit">Default <see cref="F:MultiWeatherApi.OpenWeather.Model.OWUnit.Standard"/></param>
             <param name="language">Default <see cref="F:MultiWeatherApi.Model.Language.English"/></param>
-        </member>
-        <member name="T:MultiWeatherApi.OpenWeather.Model.AlertZ">
-            <summary>
-                An severe weather alert issued by a weather service for a particular location.
-            </summary>
         </member>
         <member name="T:MultiWeatherApi.OpenWeather.Model.DataPointDSL">
             <summary>
@@ -1419,9 +1387,25 @@
         </member>
         <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.#ctor(System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:MultiWeatherApi.OpenWeather.OpenWeatherService"/> class.
+                Initializes a new instance of the weather service using the default <see cref="T:System.Net.Http.HttpMessageHandler"/>
             </summary>
             <param name="key">The API key to use.</param>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.#ctor(System.String,System.Net.Http.HttpMessageHandler)">
+            <summary>
+                Initializes a new instance of the weather service.
+            </summary>
+            <param name="apiKey">The API key to use.</param>
+            <param name="handler">the http message handler. If null use the one from <see cref="!:GetMessageHandler"/></param>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetCurrentWeather(System.String,MultiWeatherApi.OpenWeather.Model.OWUnit,MultiWeatherApi.Model.Language)">
+            <summary>
+            
+            </summary>
+            <param name="city"></param>
+            <param name="unit"></param>
+            <param name="language"></param>
+            <returns></returns>
         </member>
         <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.GetForecastDSL(System.Double,System.Double,MultiWeatherApi.OpenWeather.Model.OWUnit,MultiWeatherApi.Model.Language)">
             <summary>
@@ -1432,6 +1416,11 @@
             <param name="unit"></param>
             <param name="language"></param>
             <returns></returns>
+        </member>
+        <member name="M:MultiWeatherApi.OpenWeather.OpenWeatherService.PatchReturnedData(MultiWeatherApi.OpenWeather.Model.ForecastDSL)">
+            <summary>
+                if there is more info on the daily data, copy it on Currently
+            </summary>
         </member>
         <member name="T:MultiWeatherApi.WeatherException">
             <summary>
@@ -1479,17 +1468,29 @@
                 General commond methods for an Weather API fetcher
             </summary>
         </member>
+        <member name="F:MultiWeatherApi.WeatherServiceBase._httpClient">
+            <summary>
+                This is the shared http client (to avoid to instantiate it for each call)
+            </summary>
+        </member>
         <member name="M:MultiWeatherApi.WeatherServiceBase.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the weather service using the default <see cref="T:System.Net.Http.HttpMessageHandler"/>
+            </summary>
+            <param name="apiKey">The API key to use.</param>
+        </member>
+        <member name="M:MultiWeatherApi.WeatherServiceBase.#ctor(System.String,System.Net.Http.HttpMessageHandler)">
             <summary>
                 Initializes a new instance of the weather service.
             </summary>
-            <param name="key">The API key to use.</param>
+            <param name="apiKey">The API key to use.</param>
+            <param name="handler">the http message handler. If null use the one from <see cref="M:MultiWeatherApi.WeatherServiceBase.GetMessageHandler"/></param>
         </member>
-        <member name="M:MultiWeatherApi.WeatherServiceBase.GetCompressionHandler">
+        <member name="M:MultiWeatherApi.WeatherServiceBase.GetMessageHandler">
             <summary>
-                Creates a HttpClientHandler that supports compression for responses.
+                Creates the default HttpClientHandler that supports compression for responses. Override this method for custom handlers.
             </summary>
-            <returns>The <see cref="T:System.Net.Http.HttpClientHandler"/> with compression support.</returns>
+            <remarks>Override this method for custom handlers</remarks>
         </member>
         <member name="M:MultiWeatherApi.WeatherServiceBase.ParseJsonFromStream``1(System.IO.Stream,Newtonsoft.Json.JsonConverter[])">
             <summary>

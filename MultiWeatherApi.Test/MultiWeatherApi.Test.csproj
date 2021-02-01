@@ -7,20 +7,48 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\DarkSky_onecall.json" />
-    <None Remove="Resources\OpenW_currentweather.json" />
-    <None Remove="Resources\OpenW_onecall.json" />
+    <None Remove="Resources\DarkSky_CurrentAnd7DaysForecast_SI.json" />
+    <None Remove="Resources\DarkSky_GetCurrentWeather_SI.json" />
+    <None Remove="Resources\DarkSky_GetCurrentWeather_US.json" />
+    <None Remove="Resources\DarkSky_GetForecast_SI.json" />
+    <None Remove="Resources\DarkSky_GetWeatherByDate_SI.json" />
+    <None Remove="Resources\DarkSky_onecall_SI.json" />
+    <None Remove="Resources\OpenW_currentweather_Imperial.json" />
+    <None Remove="Resources\OpenW_currentweather_SI.json" />
+    <None Remove="Resources\OpenW_forecast_SI_French.json" />
+    <None Remove="Resources\OpenW_onecall_SI.json" />
     <None Remove="xunit.config.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\OpenW_currentweather.json">
+    <Content Include="Resources\DarkSky_GetWeatherByDate_SI.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\OpenW_onecall.json">
+    <Content Include="Resources\DarkSky_GetForecast_SI.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\DarkSky_onecall.json">
+    <Content Include="Resources\DarkSky_CurrentAnd7DaysForecast_SI.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DarkSky_GetCurrentWeather_US.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DarkSky_GetCurrentWeather_SI.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OpenW_currentweather_Imperial.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OpenW_currentweather_SI.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OpenW_forecast_SI_French.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OpenW_onecall_SI.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DarkSky_onecall_SI.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="xunit.config.json">

@@ -15,6 +15,11 @@ namespace MultiWeatherApi.DarkSky {
     public class DarkSkyService : WeatherServiceBase, IDarkSkyService {
 
         /// <summary>
+        ///     The root url of the end point
+        /// </summary>
+        public const string EndPointRoot = "https://api.darksky.net/forecast/";
+
+        /// <summary>
         ///     The API endpoint to retrieve current weather conditions.
         /// {0} - API key.
         /// {1} - Latitude.
@@ -24,7 +29,7 @@ namespace MultiWeatherApi.DarkSky {
         /// {5} - Any blocks to be excluded from the results.
         /// {6} - The language to be used in text summaries.
         /// </summary>
-        private const string CurrentConditionsUrl = "https://api.darksky.net/forecast/{0}/{1},{2}?units={3}&extend={4}&exclude={5}&lang={6}";
+        private const string CurrentConditionsUrl = EndPointRoot + "{0}/{1},{2}?units={3}&extend={4}&exclude={5}&lang={6}";
 
         /// <summary>
         ///     The API endpoint to retrieve weather conditions at a particular date and time.
@@ -37,10 +42,10 @@ namespace MultiWeatherApi.DarkSky {
         /// {6} - Any blocks to be excluded from the results.
         /// {7} - The language to be used in text summaries. 
         /// </summary>
-        private const string SpecificTimeConditionsUrl = "https://api.darksky.net/forecast/{0}/{1},{2},{3}?units={4}&extend={5}&exclude={6}&lang={7}";
+        private const string SpecificTimeConditionsUrl = EndPointRoot + "{0}/{1},{2},{3}?units={4}&extend={5}&exclude={6}&lang={7}";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DarkSkyService"/> class.
+        ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
         /// </summary>
         /// <param name="key">The API key to use.</param>
         public DarkSkyService(string key)
@@ -48,7 +53,7 @@ namespace MultiWeatherApi.DarkSky {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
+        ///     Initializes a new instance of the weather service
         /// </summary>
         /// <param name="apiKey">The API key to use.</param>
         /// <param name="handler">the http message handler. If null use the one from <see cref="GetMessageHandler"/></param>
@@ -274,7 +279,9 @@ namespace MultiWeatherApi.DarkSky {
             try {
                 HttpResponseMessage response = await _httpClient.GetAsync(requestUrl).ConfigureAwait(false);
                 ThrowExceptionIfResponseError(response);
-                //var v = await response.Content.ReadAsStringAsync();
+#if DEBUG
+    var json = await response.Content.ReadAsStringAsync();
+#endif
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
                     var output = ParseJsonFromStream<Forecast>(responseStream);
                     // patch a bit the output and return it

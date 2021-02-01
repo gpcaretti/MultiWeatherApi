@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using MultiWeatherApi.DarkSky;
 using MultiWeatherApi.Model;
@@ -10,23 +11,22 @@ namespace MultiWeatherApi {
 
     internal class DarkSkyWrapper : IWeatherService {
 
-        private IDarkSkyService _service;
-
-        /// <summary>Set the api key for the underneath weather service</summary>
-        public string ApiKey { set => _service = new DarkSkyService(value); }
+        private readonly IDarkSkyService _service;
 
         /// <summary>
-        ///     Default constructor. Require to soon set the <see cref="ApiKey"/>.
+        ///     Initializes a new instance of the weather service using the default <see cref="HttpMessageHandler"/>
         /// </summary>
-        public DarkSkyWrapper() {
+        /// <param name="key">The API key to use.</param>
+        public DarkSkyWrapper(string key) : this(key, null) {
         }
 
         /// <summary>
-        ///     Constructor allowing to set the <see cref="ApiKey"/> for the underneath weather service
+        ///     Initializes a new instance of the weather service
         /// </summary>
-        /// <param name="apiKey">the API key for the underneath weather service</param>
-        public DarkSkyWrapper(string apiKey) {
-            ApiKey = apiKey;
+        /// <param name="apiKey">The API key to use.</param>
+        /// <param name="handler">the http message handler. If null use the default one.</param>
+        public DarkSkyWrapper(string apiKey, HttpMessageHandler handler) {
+            _service = new DarkSkyService(apiKey, handler);
         }
 
         public async Task<Weather> GetCurrentWeather(double latitude, double longitude, Unit unit = Unit.Auto, Language language = Language.English) {
