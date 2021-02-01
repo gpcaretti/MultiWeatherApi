@@ -1,7 +1,7 @@
 # MultiWeather API
 
 An unofficial C# .NET Standard 2.0 library to unify the access to multiple weather services.  
-Compatible with .NET 4.5+, Mono 4.6, Windows 8/8.1, Windows Phone 8/8.1, .NET Core 2.0+,
+Compatible with .NET 4.5+, Mono 4.6, Windows 8/8.1, Windows Phone 8/8.1, .NET Core 2.0+, .NET 5.0,
 Xamarin Android/iOS, Xamarin Forms and Universal Windows Apps.
 
 All implemented services are available either as-is, i.e. you can access their API directly,
@@ -132,10 +132,11 @@ public class WeatherFactoryExt : WeatherFactory {
 
 
 ## Tests
+If you change or add new code, please integrate and check the test cases.
 
-XUnit is used for some simple integration tests with the actual web service.
-To run the tests, a valid **API key** must be added to the `xunit.config.json` 
-file in the `MultiWeatherApi.Test` folder.
+
+## Samples
+View the test code to see some sample of use.
 
 
 ## Acknowledgements
