@@ -101,8 +101,9 @@ namespace OpenWeather.Test {
             }
             // assert
             output.ShouldNotBeNull();
-            output.Coordinates.Latitude.ShouldBe(44.4667);
-            output.Coordinates.Longitude.ShouldBe(11.4333);
+            output.City.ShouldNotBeNull();
+            output.City.Coordinates.Latitude.ShouldBe(44.4667);
+            output.City.Coordinates.Longitude.ShouldBe(11.4333);
             output.WeatherInfo[0].Summary.ShouldBe("Clouds");
             output.WeatherInfo[0].Description.ShouldBe("nubi sparse");
             output.WeatherInfo[0].Icon.ShouldBe("03d");
@@ -125,10 +126,11 @@ namespace OpenWeather.Test {
             }
             // assert
             output.ShouldNotBeNull();
+            output.City.ShouldNotBeNull();
             outputImperial.City.Name.ShouldBe(output.City.Name);
             outputImperial.City.CountryCode.ShouldBe(output.City.CountryCode);
-            outputImperial.Coordinates.Latitude.ShouldBe(output.Coordinates.Latitude);
-            outputImperial.Coordinates.Longitude.ShouldBe(output.Coordinates.Longitude);
+            outputImperial.City.Coordinates.Latitude.ShouldBe(output.City.Coordinates.Latitude);
+            outputImperial.City.Coordinates.Longitude.ShouldBe(output.City.Coordinates.Longitude);
             outputImperial.Wind.Speed.ShouldNotBe(output.Wind.Speed);
             outputImperial.Temperature.Daily.ShouldNotBeNull();
             outputImperial.Temperature.Daily.Value.ShouldBeGreaterThan(output.Temperature.Daily.Value);
@@ -136,33 +138,43 @@ namespace OpenWeather.Test {
             outputImperial.ApparentTemperature.Daily.Value.ShouldBeGreaterThan(output.ApparentTemperature.Daily.Value);
         }
 
-        //[Fact]
-        //public async void GetForecast_ByCoordinates_Test() {
-        //    // prepare SI
-        //    MultiWeatherConditions output = null;
-        //    using (var stream = new BufferedStream(File.OpenRead("./Resources/OpenW_forecast_SI_French.json"), 8192)) {
-        //        var mockHttp = new MockHttpMessageHandler();
-        //        mockHttp
-        //            .When(OpenWeatherService.EndPointRoot + "*")
-        //            .Respond("application/json", stream);
-        //        IOpenWeatherService client = new OpenWeatherService("a_valid_key", mockHttp);
+        [Fact]
+        public async void GetForecast_ByCoordinates_Test() {
+            // prepare SI
+            MultiWeatherConditions output = null;
+            using (var stream = new BufferedStream(File.OpenRead("./Resources/OpenW_forecast_SI_French.json"), 8192)) {
+                var mockHttp = new MockHttpMessageHandler();
+                mockHttp
+                    .When(OpenWeatherService.EndPointRoot + "*")
+                    .Respond("application/json", stream);
+                IOpenWeatherService client = new OpenWeatherService("a_valid_key", mockHttp);
 
-        //        output = await client.GetForecast(BolognaLatitude, BolognaLongitude, OWUnit.Metric, Language.French);
-        //        stream.Close();
-        //    }
-        //    // assert
-        //    output.ShouldNotBeNull();
-        //    output.Coordinates.ShouldNotBeNull();
-        //    output.Coordinates.Latitude.ShouldBe(44.4743);
-        //    output.Coordinates.Longitude.ShouldBe(11.4301);
-        //    output.City.ShouldNotBeNull();
-        //    output.City.Country.ShouldBe("IT");
-        //    output.City.CountryCode.ShouldBe("IT");
-        //    output.City.Name.ShouldBe("Bologne");
-        //    output.City.TimeZone.ShouldBeNullOrEmpty();
-        //    output.City.SunriseTime.ShouldBe(1611470448.ToDateTimeOffset());
-        //    output.City.SunsetTime.ShouldBe(1611504699.ToDateTimeOffset());
-        //}
+                output = await client.GetForecast(BolognaLatitude, BolognaLongitude, OWUnit.Metric, Language.French);
+                stream.Close();
+            }
+            // assert
+            output.ShouldNotBeNull();
+            output.City.ShouldNotBeNull();
+            output.City.Coordinates.ShouldNotBeNull();
+            output.City.Coordinates.Latitude.ShouldBe(44.4743);
+            output.City.Coordinates.Longitude.ShouldBe(11.4301);
+            output.City.ShouldNotBeNull();
+            output.City.Country.ShouldBe("IT");
+            output.City.CountryCode.ShouldBeNullOrEmpty();
+            output.City.Name.ShouldBe("Bologne");
+            output.City.TimeZone.ShouldBeNullOrEmpty();
+            output.City.TimeZoneOffset.ShouldBe(3600);
+            output.City.SunriseTime.ShouldBe(1611470448.ToDateTimeOffset());
+            output.City.SunsetTime.ShouldBe(1611504699.ToDateTimeOffset());
+            output.Items.ShouldNotBeNull();
+            output.Items.ShouldNotBeEmpty();
+            output.Items[0].Visibility.ShouldBe(10000);
+            output.Items[0].Icon.ShouldBe("10d");
+            output.Items[0].Description.ShouldBe("légère pluie");
+            output.Items[0].UnixTime.ShouldBe(1611489600);
+            output.Items[0].Wind.Speed.ShouldBe(3.47f);
+            output.Items[0].Wind.Bearing.ShouldBe(310);
+        }
 
         [Fact]
         public async void GetForecastDSL_ByCoordinates_Test() {

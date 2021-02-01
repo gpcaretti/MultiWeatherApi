@@ -219,7 +219,7 @@ namespace DarkSky.Test {
         }
 
         [Fact]
-        public async void Serialize_onecall() {
+        public void Serialize_onecall() {
             var filename = "./Resources/DarkSky_onecall_SI.json";
             var client = new WeatherServiceBase_Wrapper();
 

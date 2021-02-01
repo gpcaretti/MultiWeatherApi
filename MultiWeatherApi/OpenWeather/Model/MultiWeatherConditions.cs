@@ -14,9 +14,6 @@ namespace MultiWeatherApi.OpenWeather.Model {
         [JsonProperty("city")]
         public City City { get; set; } = new City();
 
-        /// <summary>City geo location</summary>
-        public GeoCoordinates Coordinates { get; set; }
-
         [JsonProperty("cod")]
         public string Cod { get; set; }
 

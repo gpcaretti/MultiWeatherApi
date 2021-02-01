@@ -16,7 +16,7 @@
 		<PackageIcon>packageIcon.png</PackageIcon>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<version>1.0.0-pre2</version>
+		<version>1.0.0</version>
 		<!--<Deterministic>False</Deterministic>-->
 		<Copyright>Copyright © GP software engineering 2021</Copyright>
 	</PropertyGroup>
@@ -31,6 +31,7 @@
 		<DebugType>Full</DebugType>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<FileVersion>1.0.0</FileVersion>
+		<PackageReleaseNotes>First stable version</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>

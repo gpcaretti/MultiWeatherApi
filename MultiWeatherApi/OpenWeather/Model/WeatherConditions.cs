@@ -16,7 +16,7 @@ namespace MultiWeatherApi.OpenWeather.Model {
 
         /// <summary>the time of this data point (unix, UTC)</summary>
         [JsonProperty("dt")]
-        internal int UnixTime { get; set; }
+        public int UnixTime { get; set; }
 
         /// <summary>the time of this data point (unix, UTC)</summary>
         public DateTimeOffset Time {
@@ -26,10 +26,6 @@ namespace MultiWeatherApi.OpenWeather.Model {
 
         /// <summary>City info</summary>
         public City City { get; set; } = new City();
-
-        /// <summary>City geo location</summary>
-        [JsonProperty("coord")]
-        public GeoCoordinates Coordinates { get; set; }
 
         [JsonProperty("weather")]
         public List<WeatherInfo> WeatherInfo { get; set; }
@@ -69,6 +65,13 @@ namespace MultiWeatherApi.OpenWeather.Model {
         public string IconUrl => WeatherInfo?[0]?.IconUrl;
 
         #region Internals
+
+        /// <summary>City geo location</summary>
+        [JsonProperty("coord")]
+        internal GeoCoordinates Coordinates {
+            //get => City.Coordinates;
+            set => City.Coordinates = value;
+        }
 
         [JsonProperty("name")]
         internal string CityName {
